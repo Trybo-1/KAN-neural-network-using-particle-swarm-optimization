@@ -1,8 +1,12 @@
+import random
 class EdgeFunction:
 
-    def __init__(self,coeff: list):
+    def __init__(self,degree=2):
         # Store the coefficients
-        self.coeff = coeff
+        self.coeff = []
+
+        for i in range(degree+1):
+            self.coeff.append(int(random.random()*10))
     
 
     def evaluate(self, x):
