@@ -10,6 +10,9 @@ class KANNeuron:
         # Add the results
         # Return the final output
 
+        if len(inputs) != len(self.edge_functions):
+            raise ValueError
+        
         output = 0
         for input_value, edge_function in zip(inputs, self.edge_functions):
             output += edge_function.evaluate(input_value)
