@@ -1,0 +1,1 @@
+from kan.edge_function import EdgeFunction
