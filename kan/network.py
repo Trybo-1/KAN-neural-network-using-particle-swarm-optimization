@@ -1,7 +1,7 @@
-from neuron import KANNeuron
+from kan.neuron import KANNeuron
 class KANNetwork:
 
-    def __init__(self, layers = [2,2,1], degree = 2):
+    def __init__(self, layers , degree = 2):
         self.layers = []
         self.degree = degree
 
@@ -64,7 +64,3 @@ class KANNetwork:
                     index += coefficient_count
 
 
-network = KANNetwork(
-    layers=[2, 2, 1],
-    degree=2
-)

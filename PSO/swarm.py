@@ -1,4 +1,4 @@
-from particle import Particle
+from PSO.particle import Particle
 
 class Swarm:
 
@@ -24,6 +24,12 @@ class Swarm:
             #store best fitness and postition
             self.global_best_fitness = particle.best_fitness
             self.global_best_position = particle.best_position.copy()
+
+    def update_particles(self, inertia_weight, cognitive_weight, social_weight):
+        for particle in self.particles:
+            particle.update(self.global_best_position, inertia_weight, cognitive_weight, social_weight)
+
+        
 
 
 

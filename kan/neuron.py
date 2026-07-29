@@ -1,4 +1,4 @@
-from edge_function import EdgeFunction
+from kan.edge_function import EdgeFunction
 class KANNeuron:
 
     def __init__(self, input_size = 2, degree = 2):
