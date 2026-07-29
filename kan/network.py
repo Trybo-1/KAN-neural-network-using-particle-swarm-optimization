@@ -3,6 +3,7 @@ class KANNetwork:
 
     def __init__(self, layers = [2,2,1], degree = 2):
         self.layers = []
+        self.degree = degree
 
         for i in range(1, len(layers)):
 
@@ -31,9 +32,39 @@ class KANNetwork:
 
         return current_values
 
+    def get_parameters(self):
+
+        parameters = []
+
+        for layer in self.layers:
+            for neuron in layer:
+                for edge_function in neuron.edge_functions:
+                    # Add this edge's coefficients
+                    parameters.extend(edge_function.coeff)
+
+        return parameters
+
+
+    def set_parameters(self, parameters):
+        index = 0
+
+        if len(parameters) != len(self.get_parameters()):
+            raise ValueError(
+                "Number of parameters provided is incorrect!"
+            )
+
+        for layer in self.layers:
+            for neuron in layer:
+                for edge_function in neuron.edge_functions:
+
+                    coefficient_count = len(edge_function.coeff)
+
+                    edge_function.coeff = parameters[index:index + coefficient_count]
+
+                    index += coefficient_count
+
+
 network = KANNetwork(
     layers=[2, 2, 1],
     degree=2
 )
-
-print(network.forward([0, 1]))

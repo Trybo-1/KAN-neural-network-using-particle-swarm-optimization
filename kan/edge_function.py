@@ -4,9 +4,10 @@ class EdgeFunction:
     def __init__(self,degree=2):
         # Store the coefficients
         self.coeff = []
+        self.degree = degree
 
         for i in range(degree+1):
-            self.coeff.append(int(random.random()*10))
+            self.coeff.append(random.uniform(-0.1, 0.1))
     
 
     def evaluate(self, x):
