@@ -1,4 +1,4 @@
-from datasets import xor 
+from datasets import sinpoly as xor
 from kan.network import KANNetwork
 from PSO.particle import Particle
 from PSO.swarm import Swarm
@@ -6,8 +6,8 @@ from utils.metrics import calculate_fitness_xor as calculate_fitness
 
 import matplotlib.pyplot as plt
 
-number_of_iterations = 1000
-target_fitness_threshold = 0.0001
+number_of_iterations = 1700
+target_fitness_threshold = 0.0005
 fitness_history = []
 iterations_run = 0
 
