@@ -4,6 +4,7 @@ class KANNetwork:
     def __init__(self, layers , degree = 2):
         self.layers = []
         self.degree = degree
+        self.architecture = layers.copy()
 
         for i in range(1, len(layers)):
 
@@ -19,7 +20,9 @@ class KANNetwork:
 
 
     def forward(self, inputs):
-        current_values = inputs
+        current_values = inputs.copy()
+
+        self.layer_values = [current_values.copy()]
 
         for layer in self.layers:
             next_values = []
@@ -29,6 +32,8 @@ class KANNetwork:
                 next_values.append(output)
 
             current_values = next_values
+
+            self.layer_values.append(current_values.copy())
 
         return current_values
 

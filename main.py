@@ -1,12 +1,14 @@
 from datasets import sinpoly as xor
 from kan.network import KANNetwork
-from PSO.particle import Particle
 from PSO.swarm import Swarm
 from utils.metrics import calculate_fitness_xor as calculate_fitness
 
 import matplotlib.pyplot as plt
 
-number_of_iterations = 1700
+from visualization.app import App
+
+
+number_of_iterations = 1200
 target_fitness_threshold = 0.0005
 fitness_history = []
 iterations_run = 0
@@ -17,9 +19,7 @@ network = KANNetwork(
     degree=2
 )
 
-dimensions = len(
-    network.get_parameters()
-)
+dimensions = len(network.get_parameters())
 
 swarm = Swarm(30,dimensions)
 
@@ -65,4 +65,7 @@ print(f"\nFinal best fitness: {swarm.global_best_fitness:.6f}")
 print(calculate_fitness(network, particle, xor.test_inputs, xor.test_targets))
 
 plt.plot(range(1, iterations_run + 1), fitness_history)
-plt.show()
+#plt.show()
+
+app = App(network)
+app.run()
