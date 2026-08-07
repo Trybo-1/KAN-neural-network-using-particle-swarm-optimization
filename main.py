@@ -7,8 +7,7 @@ import matplotlib.pyplot as plt
 
 from visualization.app import App
 
-
-number_of_iterations = 1200
+number_of_iterations = 100
 target_fitness_threshold = 0.0005
 fitness_history = []
 iterations_run = 0
@@ -64,7 +63,7 @@ for inputs, target in zip(xor.test_inputs, xor.test_targets):
 print(f"\nFinal best fitness: {swarm.global_best_fitness:.6f}")
 print(calculate_fitness(network, particle, xor.test_inputs, xor.test_targets))
 
-plt.plot(range(1, iterations_run + 1), fitness_history)
+#plt.plot(range(1, iterations_run + 1), fitness_history)
 #plt.show()
 
 app = App(network)

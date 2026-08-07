@@ -45,7 +45,7 @@ class KANNetwork:
             for neuron in layer:
                 for edge_function in neuron.edge_functions:
                     # Add this edge's coefficients
-                    parameters.extend(edge_function.coeff)
+                    parameters.extend(edge_function.spline.control_points)
 
         return parameters
 
@@ -62,9 +62,9 @@ class KANNetwork:
             for neuron in layer:
                 for edge_function in neuron.edge_functions:
 
-                    coefficient_count = len(edge_function.coeff)
+                    coefficient_count = len(edge_function.spline.control_points)
 
-                    edge_function.coeff = parameters[index:index + coefficient_count]
+                    edge_function.spline.control_points = parameters[index:index + coefficient_count]
 
                     index += coefficient_count
 

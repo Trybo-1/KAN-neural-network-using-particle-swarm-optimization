@@ -1,18 +1,14 @@
 import random
+import numpy as np
+from bspline.spline1d import Spline1d as Spline
 class EdgeFunction:
 
     def __init__(self,degree=2):
         # Store the coefficients
-        self.coeff = []
+        self.spline = Spline([random.uniform(-1, 1) for _ in range(degree + 1)], degree)
         self.degree = degree
-
-        for i in range(degree+1):
-            self.coeff.append(random.uniform(-0.1, 0.1))
     
 
     def evaluate(self, x):
         # Calculate the function
-        output = 0
-        for i in range(len(self.coeff)):
-            output += self.coeff[i] * x**i
-        return output
+        return self.spline.evaluate(x)
