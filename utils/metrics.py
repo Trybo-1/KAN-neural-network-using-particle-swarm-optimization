@@ -1,7 +1,7 @@
-def calculate_fitness_xor(network, particle, xor_inputs, xor_targets):
+def calculate_mean_square_error(network, parameters, xor_inputs, xor_targets):
 
     # Put this particle's coefficients into the KAN
-    network.set_parameters(particle.position)
+    network.set_parameters(parameters)
 
     total_error = 0
 

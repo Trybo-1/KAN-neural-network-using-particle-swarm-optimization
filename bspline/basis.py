@@ -16,24 +16,24 @@ def create_knot_vector(num_control_points, degree):
     return knots
 
 #Influence of the degree on the knot vector for smoothing the curve
-def basis_function(i, degree, t, knots):
+def basis_function(index, degree, parameter, knots):
 
     # Base case
     if degree == 0:
-        if knots[i] <= t < knots[i + 1]:
+        if knots[index] <= parameter < knots[index + 1] or (parameter == 1.0 and knots[index + 1] == 1.0):
             return 1.0
         return 0.0
 
     left, right = 0.0 , 0.0
 
-    left_denom = knots[i + degree] - knots[i]
-    right_denom = knots[i + degree + 1] - knots[i + 1]
+    left_denom = knots[index + degree] - knots[index]
+    right_denom = knots[index + degree + 1] - knots[index + 1]
 
     if left_denom != 0:
-        left = (t-knots[i]) / left_denom * basis_function(i, degree - 1, t, knots)#left influnce
+        left = (parameter-knots[index]) / left_denom * basis_function(index, degree - 1, parameter, knots)#left influnce
 
     if right_denom != 0:
-        right = (knots[i + degree + 1] - t) / right_denom * basis_function(i + 1, degree - 1, t, knots)#right influence
+        right = (knots[index + degree + 1] - parameter) / right_denom * basis_function(index + 1, degree - 1, parameter, knots)#right influence
 
     return left + right
 

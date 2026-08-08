@@ -8,7 +8,7 @@ class NetworkVisual:
         self.height = height
         self.neuron_radius = 20
         self.positions = self.get_neuron_positions()
-        self.inputs = [0.25, 0.75]
+        self.inputs = [0.25]
 
         #Fonts
         self.title_font = pygame.font.Font(None, 30)
@@ -56,116 +56,44 @@ class NetworkVisual:
             index += 1
         return positions
 
-    def draw_layer_labels(
-    self,
-    screen
-    ):
+    def draw_layer_labels(self, screen):
 
         labels = []
+        number_of_layers = len(self.positions)
 
-        number_of_layers = len(
-            self.positions
-        )
-
-        for layer_index in range(
-            number_of_layers
-        ):
+        for layer_index in range(number_of_layers):
 
             if layer_index == 0:
-
                 label = "Input"
 
-            elif (
-                layer_index
-                == number_of_layers - 1
-            ):
-
+            elif (layer_index == number_of_layers - 1):
                 label = "Output"
 
             else:
+                label = (f"Hidden {layer_index}")
 
-                label = (
-                    f"Hidden {layer_index}"
-                )
+            labels.append(label)
 
-            labels.append(
-                label
-            )
+        for layer_index, label in enumerate(labels):
 
-        for layer_index, label in enumerate(
-            labels
-        ):
-
-            layer = (
-                self.positions[
-                    layer_index
-                ]
-            )
+            layer = (self.positions[layer_index])
 
             x = layer[0][0]
 
-            text = (
-                self.label_font.render(
-                    label,
-                    True,
-                    (230, 230, 230)
-                )
-            )
+            text = (self.label_font.render(label, True, (230, 230, 230)))
 
-            text_x = (
-                x
-                - text.get_width() / 2
-            )
+            text_x = (x - text.get_width() / 2)
 
-            screen.blit(
-                text,
-                (
-                    text_x,
-                    40
-                )
-            )
-    def draw_neuron_values(
-        self,
-        screen
-    ):
+            screen.blit(text,(text_x,40))
+    def draw_neuron_values(self, screen):
 
-        for layer_index, layer in enumerate(
-            self.positions
-        ):
+        for layer_index, layer in enumerate(self.positions):
+            values = (self.network.layer_values[layer_index])
 
-            values = (
-                self.network.layer_values[
-                    layer_index
-                ]
-            )
+            for neuron_index, position in enumerate(layer):
 
-            for neuron_index, position in enumerate(
-                layer
-            ):
-
-                value = (
-                    values[neuron_index]
-                )
-
-                value_text = (
-                    f"{value:.2f}"
-                )
-
-                text = (
-                    self.value_font.render(
-                        value_text,
-                        True,
-                        (255, 255, 255)
-                    )
-                )
-
-                text_rectangle = (
-                    text.get_rect(
-                        center=position
-                    )
-                )
-
-                screen.blit(
-                    text,
-                    text_rectangle
-                )
+                value = (values[neuron_index])
+                value_text = (f"{value:.2f}")
+                text = (self.value_font.render(value_text,True,(255, 255, 255)))
+                text_rectangle = (text.get_rect(center=position))
+                screen.blit(text,text_rectangle)

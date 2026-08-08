@@ -1,20 +1,21 @@
 from kan.neuron import KANNeuron
 class KANNetwork:
 
-    def __init__(self, layers , degree = 2):
+    def __init__(self, layer_sizes , degree = 2, number_of_control_points = 4):
         self.layers = []
         self.degree = degree
-        self.architecture = layers.copy()
+        self.architecture = layer_sizes.copy()
+        self.number_of_control_points = number_of_control_points
 
-        for i in range(1, len(layers)):
+        for layer_index in range(1, len(layer_sizes)):
 
-            input_size = layers[i-1]
-            output_size = layers[i]
+            input_size = layer_sizes[layer_index-1]
+            output_size = layer_sizes[layer_index]
 
             layer = []
 
             for _ in range(output_size):
-                layer.append(KANNeuron(input_size,degree))
+                layer.append(KANNeuron(input_size,self.degree, self.number_of_control_points))
 
             self.layers.append(layer)
 

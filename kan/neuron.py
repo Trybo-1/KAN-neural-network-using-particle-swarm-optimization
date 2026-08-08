@@ -1,21 +1,17 @@
 from kan.edge_function import EdgeFunction
 class KANNeuron:
 
-    def __init__(self, input_size = 2, degree = 2):
-        # Store the edge functions
+    def __init__(self, input_size = 2, degree = 2, number_of_control_points = 4):
         self.edge_functions = []
 
-        for i in range(input_size):
-            self.edge_functions.append(EdgeFunction(degree))
+        for _ in range(input_size):
+            self.edge_functions.append(EdgeFunction(degree, number_of_control_points))
 
     def forward(self, inputs):
-        # Evaluate every edge function
-        # Add the results
-        # Return the final output
 
         if len(inputs) != len(self.edge_functions):
             raise ValueError(
-                "The number of inputs do not match the number of edge functions"
+                "The number of inputs must match the number of edge functions"
             )
         
         output = 0

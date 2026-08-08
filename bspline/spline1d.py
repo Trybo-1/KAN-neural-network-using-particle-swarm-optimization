@@ -13,27 +13,27 @@ class Spline1d:
         self.knots = create_knot_vector(len(self.control_points), self.degree)
 
 
-    def evaluate(self, t):
+    def evaluate(self, parameter):
 
-        output = 0
+        value = 0
 
         for i in range(len(self.control_points)):
 
-            influence = basis_function(i, self.degree, t, self.knots)
-            output += (influence * self.control_points[i])
+            influence = basis_function(i, self.degree, parameter, self.knots)
+            value += (influence * self.control_points[i])
 
-        return output
+        return value
 
 
     def create_curve(self, resolution=500):
 
         curve_points = []
 
-        t_values = np.linspace(self.knots[self.degree], self.knots[-self.degree - 1], resolution)
+        parameter_values = np.linspace(self.knots[self.degree], self.knots[-self.degree - 1], resolution)
 
-        for t in t_values:
+        for parameter in parameter_values:
 
-            point = self.evaluate(t)
+            point = self.evaluate(parameter)
             curve_points.append(point)
 
         return np.array(curve_points)

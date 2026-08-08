@@ -1,8 +1,6 @@
 import pygame
 
-from visualization.network_visual import (
-    NetworkVisual
-)
+from visualization.network_visual import (NetworkVisual)
 
 
 class App:
@@ -35,13 +33,9 @@ class App:
                     self.running = False
 
 
-            self.screen.fill(
-                (20, 20, 30)
-            )
+            self.screen.fill((20, 20, 30))
 
-            self.network_view.draw(
-                self.screen
-            )
+            self.network_view.draw(self.screen)
 
             pygame.display.flip()
 

@@ -2,13 +2,13 @@ from PSO.particle import Particle
 
 class Swarm:
 
-    def __init__(self, number_of_particles, dimensions):
+    def __init__(self, number_of_particles, number_of_parameters):
 
         #creating particles for swarm
         self.particles = []
 
         for _ in range(number_of_particles):
-            particle = Particle(dimensions)
+            particle = Particle(number_of_parameters)
             self.particles.append(particle)
 
         #global best position

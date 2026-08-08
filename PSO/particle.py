@@ -2,13 +2,13 @@ import random
 
 class Particle:
 
-    def __init__(self, dimensions):
+    def __init__(self, number_of_parameters):
 
         # Create the position
         self.position = []
         self.maximum_velocity = 0.5
 
-        for _ in range(dimensions):
+        for _ in range(number_of_parameters):
             value = random.uniform(-1, 1)
             self.position.append(value)
 
@@ -16,7 +16,7 @@ class Particle:
 
         self.velocity = []
 
-        for _ in range(dimensions):
+        for _ in range(number_of_parameters):
             value = random.uniform(-0.1, 0.1)
             self.velocity.append(value)
 
@@ -57,7 +57,7 @@ class Particle:
             #limit max velocity
             if self.velocity[i] > self.maximum_velocity:
                 self.velocity[i] = self.maximum_velocity
-            if self.velocity[i] < -self.maximum_velocity:
+            elif self.velocity[i] < -self.maximum_velocity:
                 self.velocity[i] = -self.maximum_velocity
 
             # Update position
