@@ -216,3 +216,16 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Godot 4
+.godot/
+
+# Imported assets/cache
+.import/
+
+# Exported builds
+*.pck
+*.zip
+
+# Godot logs
+logs/

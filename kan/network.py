@@ -15,20 +15,23 @@ class KANNetwork:
             layer = []
 
             for _ in range(output_size):
-                layer.append(KANNeuron(input_size,self.degree, self.number_of_control_points))
+                layer.append(KANNeuron(input_size = input_size, degree = degree, number_of_control_points = number_of_control_points))
 
             self.layers.append(layer)
 
 
     def forward(self, inputs):
+
         current_values = inputs.copy()
 
         self.layer_values = [current_values.copy()]
 
-        for layer in self.layers:
+        for layer_index, layer in enumerate(self.layers):
+
             next_values = []
 
             for neuron in layer:
+
                 output = neuron.forward(current_values)
                 next_values.append(output)
 

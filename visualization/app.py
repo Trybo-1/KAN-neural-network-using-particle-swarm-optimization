@@ -32,6 +32,24 @@ class App:
                 if (event.type == pygame.QUIT):
                     self.running = False
 
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        edge = (self.network_view.get_clicked_edge(event.pos))
+
+                        if edge is not None:
+
+                            self.network_view.selected_edge = edge
+
+                            print(
+                                "Selected edge:",
+                                f"Layer {edge['layer']}",
+                                f"Input {edge['input_index']}",
+                                f"Output {edge['output_index']}"
+                            )
+
+                        else:
+
+                            self.network_view.selected_edge = None
 
             self.screen.fill((20, 20, 30))
 
@@ -40,6 +58,5 @@ class App:
             pygame.display.flip()
 
             self.clock.tick(60)
-
 
         pygame.quit()

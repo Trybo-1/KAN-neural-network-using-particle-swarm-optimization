@@ -8,7 +8,9 @@ class NetworkVisual:
         self.height = height
         self.neuron_radius = 20
         self.positions = self.get_neuron_positions()
-        self.inputs = [0.25]
+        self.inputs = [0.25,0.75]
+
+        self.selected_edge = None
 
         #Fonts
         self.title_font = pygame.font.Font(None, 30)
@@ -21,12 +23,37 @@ class NetworkVisual:
 
         self.network.forward(self.inputs)
 
-        for index in range(len(self.positions) -1):
-            current_layer = self.positions[index]
-            next_layer = self.positions[index + 1]
-            for pos1 in current_layer:
-                for pos2 in next_layer:
-                    pygame.draw.line(screen, (120, 120, 120), pos1, pos2, 2)
+        for layer_index in range(len(self.positions) - 1):
+
+            current_layer = self.positions[layer_index]
+            next_layer = self.positions[layer_index + 1]
+
+            for input_index, pos1 in enumerate(current_layer):
+
+                for output_index, pos2 in enumerate(next_layer):
+
+                    selected = (
+                        self.selected_edge is not None
+                        and self.selected_edge["layer"] == layer_index
+                        and self.selected_edge["input_index"] == input_index
+                        and self.selected_edge["output_index"] == output_index
+                    )
+
+                    if selected:
+                        line_color = (255, 200, 50)
+                        line_width = 5
+
+                    else:
+                        line_color = (120, 120, 120)
+                        line_width = 2
+
+                    pygame.draw.line(
+                        screen,
+                        line_color,
+                        pos1,
+                        pos2,
+                        line_width
+                    )
 
         for layer in self.positions:
             for pos in layer:
@@ -85,6 +112,7 @@ class NetworkVisual:
             text_x = (x - text.get_width() / 2)
 
             screen.blit(text,(text_x,40))
+            
     def draw_neuron_values(self, screen):
 
         for layer_index, layer in enumerate(self.positions):
@@ -97,3 +125,72 @@ class NetworkVisual:
                 text = (self.value_font.render(value_text,True,(255, 255, 255)))
                 text_rectangle = (text.get_rect(center=position))
                 screen.blit(text,text_rectangle)
+
+    def get_edges(self):
+
+        edges = []
+
+        for layer_index in range(len(self.positions) - 1):
+
+            current_layer = self.positions[layer_index]
+            next_layer = self.positions[layer_index + 1]
+
+            for input_index, start_position in enumerate(current_layer):
+
+                for output_index, end_position in enumerate(next_layer):
+
+                    edges.append({
+                        "start": start_position,
+                        "end": end_position,
+                        "layer": layer_index,
+                        "input_index": input_index,
+                        "output_index": output_index
+                    })
+
+        return edges
+
+    def distance_to_line(self, point, start, end):
+
+        px, py = point
+        x1, y1 = start
+        x2, y2 = end
+
+        dx = x2 - x1
+        dy = y2 - y1
+
+        if dx == 0 and dy == 0:
+            return ((px - x1) ** 2 + (py - y1) ** 2) ** 0.5
+
+        t = (
+            (px - x1) * dx +
+            (py - y1) * dy
+        ) / (dx * dx + dy * dy)
+
+        t = max(0, min(1, t))
+
+        closest_x = x1 + t * dx
+        closest_y = y1 + t * dy
+
+        distance = (
+            (px - closest_x) ** 2 +
+            (py - closest_y) ** 2
+        ) ** 0.5
+
+        return distance
+
+    def get_clicked_edge(self, mouse_position):
+
+        edges = self.get_edges()
+
+        for edge in edges:
+
+            distance = self.distance_to_line(
+                mouse_position,
+                edge["start"],
+                edge["end"]
+            )
+
+            if distance < 8:
+                return edge
+
+        return None

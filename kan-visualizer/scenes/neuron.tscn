@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://ftsrsdpp27o0"]
+
+[ext_resource type="Script" uid="uid://3ltxpt3ga4kw" path="res://scripts/neuron.gd" id="1_dkhps"]
+
+[node name="Neuron" type="Node2D" unique_id=885100950]
+script = ExtResource("1_dkhps")

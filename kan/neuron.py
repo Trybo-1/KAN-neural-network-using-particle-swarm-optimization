@@ -5,7 +5,7 @@ class KANNeuron:
         self.edge_functions = []
 
         for _ in range(input_size):
-            self.edge_functions.append(EdgeFunction(degree, number_of_control_points))
+            self.edge_functions.append(EdgeFunction(degree = degree, number_of_control_points = number_of_control_points))
 
     def forward(self, inputs):
 
@@ -14,7 +14,7 @@ class KANNeuron:
                 "The number of inputs must match the number of edge functions"
             )
         
-        output = 0
+        output = 0.0
         for input_value, edge_function in zip(inputs, self.edge_functions):
             output += edge_function.evaluate(input_value)
         return output

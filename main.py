@@ -1,4 +1,6 @@
-from datasets import quadratic as continuous_xor
+import math
+
+from datasets import sinpoly as continuous_xor
 from kan.network import KANNetwork
 from PSO.swarm import Swarm
 from utils.metrics import calculate_mean_square_error 
@@ -7,7 +9,7 @@ from visualization.app import App
 import matplotlib.pyplot as plt
 
 #settings
-number_of_iterations = 1000
+number_of_iterations = 50
 target_fitness_threshold = 0.0005
 
 inertia_weight = 0.7
@@ -17,9 +19,9 @@ social_weight = 1.5
 
 #creating network
 network = KANNetwork(
-    layer_sizes=[1, 2, 1],
+    layer_sizes=[2, 2, 1],
     degree=2,
-    number_of_control_points=4
+    number_of_control_points=3
 )
 
 #creating swarm
@@ -117,3 +119,4 @@ ax.set_ylabel("X2")
 ax.set_zlabel("Target")
 
 plt.show()
+
