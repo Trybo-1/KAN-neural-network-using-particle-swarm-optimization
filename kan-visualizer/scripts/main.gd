@@ -90,7 +90,7 @@ func create_edge(start_neuron, end_neuron):
 	var edge = edge_scene.instantiate()
 	edge.start_neuron = start_neuron
 	edge.end_neuron = end_neuron
-	edge.coefficients = [
+	edge.control_points = [
 		randf_range(-1.0, 1.0),
 		randf_range(-1.0, 1.0),
 		randf_range(-1.0, 1.0)

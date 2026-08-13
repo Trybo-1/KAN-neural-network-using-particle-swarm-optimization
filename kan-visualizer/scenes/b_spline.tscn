@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cdpquetyrdf83"]
+
+[ext_resource type="Script" uid="uid://c5jpayhb7vtsa" path="res://scripts/bspline.gd" id="1_kr2n6"]
+
+[node name="BSpline" type="Node2D" unique_id=845509735]
+script = ExtResource("1_kr2n6")
