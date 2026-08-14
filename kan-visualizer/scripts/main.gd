@@ -6,6 +6,9 @@ var neuron_scene = preload("res://scenes/neuron.tscn")
 var network_margin = Vector2(100, 100)
 var network
 
+var selected_edge_index = -1
+var edges = []
+
 var architecture = [2,2,1]
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -70,33 +73,25 @@ func get_network_area():
 	return Rect2(network_margin, viewport_size - network_margin * 2.0)
 	
 func _draw():
-	if network == null:
-		return
-
-	for layer_index in range(network.size() - 1):
-		var current_layer = network[layer_index]
-		var next_layer = network[layer_index + 1]
-
-		for current_neuron in current_layer:
-			for next_neuron in next_layer:
-				draw_line(
-					current_neuron.position,
-					next_neuron.position,
-					Color(0.4, 0.4, 0.4),
-					3.0
-				)
+	pass
 
 func create_edge(start_neuron, end_neuron):
 	var edge = edge_scene.instantiate()
 	edge.start_neuron = start_neuron
 	edge.end_neuron = end_neuron
-	edge.control_points = [
-		randf_range(-1.0, 1.0),
-		randf_range(-1.0, 1.0),
-		randf_range(-1.0, 1.0)
-	]
+	edge.edge_index = edges.size()
+	edge.edge_selected.connect(_on_edge_selected)
 	add_child(edge)
+	edges.append(edge)
 	return edge
+	
+func _on_edge_selected(index):
+	selected_edge_index = index
+
+	for i in range(edges.size()):
+		edges[i].set_selected(i == selected_edge_index)
+
+	queue_redraw()
 
 func connect_network(network):
 	for layer_index in range(network.size() - 1):

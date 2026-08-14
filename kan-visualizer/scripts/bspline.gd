@@ -10,7 +10,13 @@ var offset = Vector2.ZERO
 
 var origin = Vector2(575, 350)
 var scaler = 50.0
-var axis_length = 400
+var graph_margin = 80.0
+
+var axis_padding = 2
+
+var hover_t = 0.0
+var hover_curve_point = Vector2.ZERO
+var show_t_marker = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -104,19 +110,7 @@ func evaluate(t: float) -> Vector2:
 
 func _draw():
 	# Axes
-	draw_line(
-		origin - Vector2(500,0),
-		origin + Vector2(500, 0),
-		Color.WHITE,
-		2.0
-	)
-
-	draw_line(
-		origin - Vector2(0,-500),
-		origin + Vector2(0, -500),
-		Color.WHITE,
-		2.0
-	)
+	draw_axes()
 
 	# Control polygon
 	for i in range(control_points.size() - 1):
@@ -151,50 +145,24 @@ func _draw():
 			3.0
 		)
 		
-	var tick_range = 10
+	if show_t_marker:
+		var screen_point = math_to_screen(hover_curve_point)
 
-	# X-axis ticks
-	for x in range(-tick_range, tick_range + 1):
-		var position = math_to_screen(Vector2(x, 0))
-
-		draw_line(
-			position + Vector2(0, -5),
-			position + Vector2(0, 5),
-			Color.WHITE,
-			1.0
+		draw_circle(
+			screen_point,
+			7.0,
+			Color.RED
 		)
-		
-		if x != 0:
-			draw_string(
-				ThemeDB.fallback_font,
-				position + Vector2(-5, 20),
-				str(x),
-				HORIZONTAL_ALIGNMENT_LEFT,
-				-1,
-				14
-			)
 
-	# Y-axis ticks
-	for y in range(-tick_range, tick_range + 1):
-		var position = math_to_screen(Vector2(0, y))
-
-		draw_line(
-			position + Vector2(-5, 0),
-			position + Vector2(5, 0),
-			Color.WHITE,
-			1.0
+		draw_string(
+			ThemeDB.fallback_font,
+			screen_point + Vector2(10, -10),
+			"t = %.2f" % hover_t,
+			HORIZONTAL_ALIGNMENT_LEFT,
+			-1,
+			16
 		)
-		
-		if y != 0:
-			draw_string(
-				ThemeDB.fallback_font,
-				position + Vector2(-25, 5),
-				str(y),
-				HORIZONTAL_ALIGNMENT_LEFT,
-				-1,
-				14
-			)
-		
+
 func _input(event):
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
@@ -213,9 +181,149 @@ func _input(event):
 		if dragging and selected_point != -1:
 			control_points[selected_point] = screen_to_math(event.position) + offset
 			queue_redraw()
-			
+		find_nearest_curve_point(event.position)
+
 func math_to_screen(point: Vector2) -> Vector2:
-	return Vector2(origin.x + point.x * scaler, origin.y - point.y * scaler)
+	var bounds = get_axis_bounds()
+	var viewport_size = get_viewport_rect().size
+	var scaler = get_scaler()
 	
+	var bounds_center = bounds.position + bounds.size / 2.0
+	var screen_center = viewport_size / 2.0
+	
+	return Vector2(screen_center.x + (point.x - bounds_center.x) * scaler, screen_center.y - (point.y - bounds_center.y) * scaler)
+
 func screen_to_math(point: Vector2) -> Vector2:
-	return Vector2((point.x - origin.x) / scaler, (origin.y - point.y) / scaler)
+	var bounds = get_axis_bounds()
+	var viewport_size = get_viewport_rect().size
+	var scaler = get_scaler()
+	
+	var bounds_center = bounds.position + bounds.size / 2.0
+	var screen_center = viewport_size / 2.0
+	
+	return Vector2(bounds_center.x + (point.x - screen_center.x) / scaler, bounds_center.y - (point.y - screen_center.y) / scaler)
+
+func get_axis_bounds():
+	var min_x = control_points[0].x
+	var max_x = control_points[0].x
+	var min_y = control_points[0].y
+	var max_y = control_points[0].y
+	
+	for point in control_points:
+		min_x = min(min_x, point.x)
+		max_x = max(max_x, point.x)
+		min_y = min(min_y, point.y)
+		max_y = max(max_y, point.y)
+	
+	min_x = floor(min_x) - axis_padding
+	max_x = ceil(max_x) + axis_padding
+	min_y = floor(min_y) - axis_padding
+	max_y = ceil(max_y) + axis_padding
+	
+	return Rect2(Vector2(min_x, min_y), Vector2(max_x - min_x, max_y - min_y))
+	
+func draw_axes():
+	var bounds = get_axis_bounds()
+	var min_x = int(bounds.position.x)
+	var max_x = int(bounds.end.x)
+	var min_y = int(bounds.position.y)
+	var max_y = int(bounds.end.y)
+	
+	# X axis
+	if min_y <= 0 and max_y >= 0:
+		var x_start = math_to_screen(Vector2(min_x, 0))
+		var x_end = math_to_screen(Vector2(max_x, 0))
+		
+		draw_line(
+			x_start,
+			x_end,
+			Color.WHITE,
+			1.0
+		)
+		
+	# Y axis
+	if min_x <= 0 and max_x >= 0:
+		var y_start = math_to_screen(Vector2(0, min_y))
+		var y_end = math_to_screen(Vector2(0, max_y))
+		
+		draw_line(
+			y_start,
+			y_end,
+			Color.WHITE,
+			1.0
+		)
+	
+	# X ticks
+	for x in range(min_x, max_x + 1):
+		var position = math_to_screen(Vector2(x, 0))
+		
+		draw_line(
+			position + Vector2(0, -5),
+			position + Vector2(0, 5),
+			Color.WHITE,
+			1.0
+		)
+		
+		if x != 0:
+			draw_string(
+				ThemeDB.fallback_font,
+				position + Vector2(-5, 20),
+				str(x),
+				HORIZONTAL_ALIGNMENT_LEFT,
+				-1,
+				14
+			)
+	
+	# Y ticks
+	for y in range(min_y, max_y + 1):
+		var position = math_to_screen(Vector2(0, y))
+		
+		draw_line(
+			position + Vector2(-5, 0),
+			position + Vector2(5, 0),
+			Color.WHITE,
+			1.0
+		)
+		
+		if y != 0:
+			draw_string(
+				ThemeDB.fallback_font,
+				position + Vector2(-25, 5),
+				str(y),
+				HORIZONTAL_ALIGNMENT_LEFT,
+				-1,
+				14
+			)
+			
+func find_nearest_curve_point(mouse_position: Vector2):
+	var curve_points = create_curve()
+	var closest_distance = INF
+	var closest_index = -1
+
+	for i in range(curve_points.size()):
+		var screen_point = math_to_screen(curve_points[i])
+		var distance = screen_point.distance_squared_to(mouse_position)
+
+		if distance < closest_distance:
+			closest_distance = distance
+			closest_index = i
+
+	if closest_index != -1:
+		var resolution = curve_points.size()
+		hover_t = float(closest_index) / float(resolution - 1)
+		hover_curve_point = curve_points[closest_index]
+		show_t_marker = true
+
+	queue_redraw()
+
+func get_scaler() -> float:
+	var bounds = get_axis_bounds()
+	var viewport_size = get_viewport_rect().size
+	
+	var available_width = viewport_size.x - graph_margin * 2.0
+	var available_height = viewport_size.y - graph_margin * 2.0
+	
+	var scale_x = available_width / bounds.size.x
+	var scale_y = available_height / bounds.size.y
+	
+	return min(scale_x, scale_y)
