@@ -8,6 +8,21 @@ var end_neuron
 var edge_index = -1
 var selected = false
 
+var from_layer = -1
+var to_layer = -1
+
+var from_neuron = -1
+var to_neuron = -1
+
+var control_points = [
+	Vector2(-4, 2),
+	Vector2(-2, 4),
+	Vector2(0, 1),
+	Vector2(2, 4),
+	Vector2(4, 2)
+]
+
+
 func _ready():
 	z_index = -1
 

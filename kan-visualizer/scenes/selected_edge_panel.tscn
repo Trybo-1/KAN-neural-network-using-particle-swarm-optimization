@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://c64yow11vty8s"]
+
+[ext_resource type="Script" uid="uid://bp3gk7hr0uld2" path="res://scripts/selected_edge_panel.gd" id="1_tgxj0"]
+[ext_resource type="PackedScene" uid="uid://cdpquetyrdf83" path="res://scenes/b_spline.tscn" id="2_ns78b"]
+
+[node name="SelectedEdgePanel" type="Panel" unique_id=1029635757]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_tgxj0")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=807265739]
+propagate_maximum_size = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=995518985]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="MarginContainer/VBoxContainer" unique_id=141618824]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Title"
+
+[node name="ConnectionLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=262399852]
+layout_mode = 2
+
+[node name="LayerLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1078093043]
+layout_mode = 2
+text = "Layer:"
+
+[node name="FromLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1202007331]
+layout_mode = 2
+
+[node name="ToLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=540580215]
+layout_mode = 2
+
+[node name="BSpline" parent="MarginContainer/VBoxContainer" unique_id=845509735 instance=ExtResource("2_ns78b")]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 4.0
+
+[node name="ControlPointsContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=2006385756]
+layout_mode = 2

@@ -1,6 +1,12 @@
-extends Node2D
+extends Control
 
-var control_points
+var control_points = [
+		Vector2(-4, 2),
+		Vector2(-2, 4),
+		Vector2(0, 1),
+		Vector2(2, 4),
+		Vector2(4, 2)
+	]
 var degree = 3
 var knots
 
@@ -8,9 +14,7 @@ var selected_point = -1
 var dragging = false
 var offset = Vector2.ZERO
 
-var origin = Vector2(575, 350)
-var scaler = 50.0
-var graph_margin = 80.0
+var graph_margin = 35.0
 
 var axis_padding = 2
 
@@ -18,23 +22,18 @@ var hover_t = 0.0
 var hover_curve_point = Vector2.ZERO
 var show_t_marker = false
 
+signal control_point_changed(index, point)
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	control_points = [
-	Vector2(-4, 2),
-	Vector2(-2, 4),
-	Vector2(0, 1),
-	Vector2(2, 4),
-	Vector2(4, 2)
-]
-	self.degree = 2
-	self.knots = create_knot_vector(control_points.size(), degree)
-	
-	print("Degree: ", degree)
-	print("Knots: ", knots)
-	
+	degree = 2
+	knots = create_knot_vector(control_points.size(), degree)
 	queue_redraw()
 
+func set_control_points(points):
+	control_points = points
+	knots = create_knot_vector(control_points.size(), degree)
+	queue_redraw()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -163,46 +162,30 @@ func _draw():
 			16
 		)
 
-func _input(event):
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			if event.pressed:
-				for i in range(control_points.size()):
-					if math_to_screen(control_points[i]).distance_to(event.position) < 15:
-						selected_point = i
-						offset = get_global_mouse_position() - event.position
-						dragging = true
-						break
-			else:
-				dragging = false
-				selected_point = -1
-		
-	if event is InputEventMouseMotion:
-		if dragging and selected_point != -1:
-			control_points[selected_point] = screen_to_math(event.position) + offset
-			queue_redraw()
-		find_nearest_curve_point(event.position)
 
 func math_to_screen(point: Vector2) -> Vector2:
 	var bounds = get_axis_bounds()
-	var viewport_size = get_viewport_rect().size
 	var scaler = get_scaler()
-	
+
 	var bounds_center = bounds.position + bounds.size / 2.0
-	var screen_center = viewport_size / 2.0
-	
-	return Vector2(screen_center.x + (point.x - bounds_center.x) * scaler, screen_center.y - (point.y - bounds_center.y) * scaler)
+	var screen_center = size / 2.0
+
+	return Vector2(
+		screen_center.x + (point.x - bounds_center.x) * scaler,
+		screen_center.y - (point.y - bounds_center.y) * scaler
+	)
 
 func screen_to_math(point: Vector2) -> Vector2:
 	var bounds = get_axis_bounds()
-	var viewport_size = get_viewport_rect().size
 	var scaler = get_scaler()
-	
 	var bounds_center = bounds.position + bounds.size / 2.0
-	var screen_center = viewport_size / 2.0
-	
-	return Vector2(bounds_center.x + (point.x - screen_center.x) / scaler, bounds_center.y - (point.y - screen_center.y) / scaler)
+	var screen_center = size / 2.0
 
+	return Vector2(
+		bounds_center.x + (point.x - screen_center.x) / scaler,
+		bounds_center.y - (point.y - screen_center.y) / scaler
+	)
+	
 func get_axis_bounds():
 	var min_x = control_points[0].x
 	var max_x = control_points[0].x
@@ -318,12 +301,34 @@ func find_nearest_curve_point(mouse_position: Vector2):
 
 func get_scaler() -> float:
 	var bounds = get_axis_bounds()
-	var viewport_size = get_viewport_rect().size
-	
-	var available_width = viewport_size.x - graph_margin * 2.0
-	var available_height = viewport_size.y - graph_margin * 2.0
-	
+
+	var available_width = size.x - graph_margin * 2.0
+	var available_height = size.y - graph_margin * 2.0
+
 	var scale_x = available_width / bounds.size.x
 	var scale_y = available_height / bounds.size.y
-	
+
 	return min(scale_x, scale_y)
+
+func _gui_input(event):
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				var mouse_position = event.position
+
+				for i in range(control_points.size()):
+					if math_to_screen(control_points[i]).distance_to(mouse_position) < 15:
+						selected_point = i
+						dragging = true
+						break
+			else:
+				dragging = false
+				selected_point = -1
+
+	if event is InputEventMouseMotion:
+		if dragging and selected_point != -1:
+			control_points[selected_point] = screen_to_math(event.position)
+			control_point_changed.emit(selected_point, control_points[selected_point])
+			queue_redraw()
+
+		find_nearest_curve_point(event.position)

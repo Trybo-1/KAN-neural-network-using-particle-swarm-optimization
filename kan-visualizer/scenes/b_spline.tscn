@@ -2,5 +2,11 @@
 
 [ext_resource type="Script" uid="uid://c5jpayhb7vtsa" path="res://scripts/bspline.gd" id="1_kr2n6"]
 
-[node name="BSpline" type="Node2D" unique_id=845509735]
+[node name="BSpline" type="Control" unique_id=584800925]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_kr2n6")
