@@ -9,7 +9,7 @@ from visualization.app import App
 import matplotlib.pyplot as plt
 
 #settings
-number_of_iterations = 50
+number_of_iterations = 1000
 target_fitness_threshold = 0.0005
 
 inertia_weight = 0.7
@@ -25,7 +25,7 @@ network = KANNetwork(
 )
 
 #creating swarm
-number_of_particles = 30
+number_of_particles = 20
 number_of_parameters = len(network.get_parameters())
 
 swarm = Swarm(number_of_particles, number_of_parameters)
