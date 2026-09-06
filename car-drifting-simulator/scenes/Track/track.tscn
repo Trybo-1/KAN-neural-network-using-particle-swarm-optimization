@@ -4,6 +4,15 @@
 [ext_resource type="Texture2D" uid="uid://bv4p2obeldpqh" path="res://Assets/Images/GrassBg.png" id="1_t1qki"]
 [ext_resource type="Texture2D" uid="uid://c1m5vk3rejca7" path="res://Assets/Images/Monaco.png" id="1_wxxsa"]
 [ext_resource type="PackedScene" uid="uid://b7a0fnvegmja4" path="res://scenes/Car/car.tscn" id="2_t1qki"]
+[ext_resource type="Texture2D" uid="uid://dec3bup5l0rha" path="res://Assets/Images/FinishLine.png" id="4_30y1k"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sne7k"]
+
+[sub_resource type="Curve2D" id="Curve2D_30y1k"]
+_data = {
+"points": PackedVector2Array(-31, 127, -0.85975456, -114, 961, 256, 56.96138, 26, -49.237804, -14, 682.9513, 84, 76, 14, -76, -14, 477.311, 245, 117, 41, -117, -41, 351, 126, -98, -45, 98, 45, 149, 451, 0, 0, 55.995934, -10, 486, 461, -36, 67, 36, -67, 835.49194, 531, -30.343496, 86, 12, -84, 724.4655, 333, -0.103658676, 102, 3, -53, 961, 256)
+}
+point_count = 9
 
 [node name="Track" type="Node" unique_id=824789782]
 script = ExtResource("1_0jpli")
@@ -17,8 +26,15 @@ position = Vector2(571, 323)
 scale = Vector2(0.8, 0.8)
 texture = ExtResource("1_wxxsa")
 
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=797002474]
+position = Vector2(585, 480.99994)
+rotation = 1.8831202
+scale = Vector2(0.9999999, 0.9999999)
+texture = ExtResource("4_30y1k")
+
 [node name="car" parent="." unique_id=1158992222 instance=ExtResource("2_t1qki")]
-position = Vector2(272, 470)
+position = Vector2(574, 475)
+rotation = 0.3109983
 
 [node name="track_collision" type="Area2D" parent="." unique_id=1155102240]
 collision_layer = 0
@@ -28,5 +44,46 @@ polygon = PackedVector2Array(340, 175, 292, 210, 232, 266, 188, 343, 185, 380, 1
 
 [node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="track_collision" unique_id=259763693]
 polygon = PackedVector2Array(372, 42, 335, 45, 298, 60, 241, 92, 190, 131, 143, 179, 115, 216, 89, 260, 70, 308, 59, 359, 61, 406, 70, 448, 91, 488, 122, 518, 164, 538, 244, 545, 437, 519, 482, 519, 552, 535, 700, 583, 798, 613, 839, 622, 885, 620, 925, 603, 951, 564, 961, 520, 947, 474, 913, 433, 862, 395, 794, 349, 866, 363, 947, 372, 1006, 363, 1052, 332, 1074, 284, 1075, 234, 1044, 178, 997, 140, 948, 107, 841, 52, 731, 15, 686, 18, 651, 36, 604, 75, 496, 184, 492, 8, 753, 1, 1117, 27, 1139, 641, 20, 633, 18, 8, 484, 8, 501, 185, 407, 61)
+
+[node name="Startline" type="Area2D" parent="." unique_id=939959991]
+position = Vector2(585.99994, 480)
+rotation = 0.33804998
+scale = Vector2(1, 1.1132715)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Startline" unique_id=2022756072]
+scale = Vector2(0.59999955, 6.4000006)
+shape = SubResource("RectangleShape2D_sne7k")
+
+[node name="Checkpoint2" type="Area2D" parent="." unique_id=780151711]
+position = Vector2(881, 146.00003)
+rotation = 0.4613555
+scale = Vector2(1, 1.1132715)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Checkpoint2" unique_id=701190775]
+scale = Vector2(0.59999955, 6.4000006)
+shape = SubResource("RectangleShape2D_sne7k")
+
+[node name="Checkpoint3" type="Area2D" parent="." unique_id=1438769061]
+position = Vector2(421.00003, 187.00003)
+rotation = 0.8524252
+scale = Vector2(1, 1.1132715)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Checkpoint3" unique_id=581129258]
+scale = Vector2(0.59999955, 6.4000006)
+shape = SubResource("RectangleShape2D_sne7k")
+
+[node name="Checkpoint4" type="Area2D" parent="." unique_id=931705265]
+position = Vector2(148.00002, 456.00003)
+rotation = 0.8524252
+scale = Vector2(1, 1.1132715)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Checkpoint4" unique_id=1221467737]
+scale = Vector2(0.59999955, 6.4000006)
+shape = SubResource("RectangleShape2D_sne7k")
+
+[node name="centre_Line" type="Path2D" parent="." unique_id=1288308061]
+position = Vector2(-4.39373, 0)
+scale = Vector2(1.0357895, 1)
+curve = SubResource("Curve2D_30y1k")
 
 [connection signal="area_entered" from="track_collision" to="." method="_on_track_collision_area_entered"]

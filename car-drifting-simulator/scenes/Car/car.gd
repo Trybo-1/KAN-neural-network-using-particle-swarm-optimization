@@ -49,12 +49,12 @@ func apply_rotation(delta: float) -> void:
 		rotate(get_steer_factor() * delta * steer)
 
 
-func bounce() -> void:
+func bounce(pos: Vector2) -> void:
 	set_physics_process(false)
 	velocity = 0.0
-	position += -transform.x * bounce_force
+	position = pos
 	await get_tree().create_timer(bounce_time).timeout
 	set_physics_process(true)
 
-func hit_boundary() -> void:
-	bounce()
+func hit_boundary(pos: Vector2) -> void:
+	bounce(pos)
