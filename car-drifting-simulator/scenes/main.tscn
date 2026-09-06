@@ -1,13 +1,6 @@
 [gd_scene format=3 uid="uid://47u7ovkdb1x2"]
 
 [ext_resource type="Script" uid="uid://bgdo0rqivq3uk" path="res://scripts/main.gd" id="1_o5qli"]
-[ext_resource type="PackedScene" uid="uid://gc3hkumh86sl" path="res://scenes/car.tscn" id="2_0wfyh"]
 
 [node name="Main" type="Node2D" unique_id=1909099459]
 script = ExtResource("1_o5qli")
-
-[node name="Car" parent="." unique_id=1465919318 instance=ExtResource("2_0wfyh")]
-position = Vector2(576, 234)
-mass = 1.0
-engine_force = 100.0
-drag = 1.0
