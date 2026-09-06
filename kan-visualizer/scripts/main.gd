@@ -12,6 +12,7 @@ var selected_edge_index = -1
 var edges = []
 
 var architecture = [2,2,1]
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	network = create_network(architecture)
