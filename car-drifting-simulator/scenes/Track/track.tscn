@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://c1m5vk3rejca7" path="res://Assets/Images/Monaco.png" id="1_wxxsa"]
 [ext_resource type="PackedScene" uid="uid://b7a0fnvegmja4" path="res://scenes/Car/car.tscn" id="2_t1qki"]
 [ext_resource type="Texture2D" uid="uid://dec3bup5l0rha" path="res://Assets/Images/FinishLine.png" id="4_30y1k"]
+[ext_resource type="PackedScene" uid="uid://b266e1h53ye62" path="res://scenes/utils/checkpoint.tscn" id="6_5c7gn"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sne7k"]
 
@@ -26,16 +27,6 @@ position = Vector2(571, 323)
 scale = Vector2(0.8, 0.8)
 texture = ExtResource("1_wxxsa")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=797002474]
-position = Vector2(585, 480.99994)
-rotation = 1.8831202
-scale = Vector2(0.9999999, 0.9999999)
-texture = ExtResource("4_30y1k")
-
-[node name="car" parent="." unique_id=1158992222 instance=ExtResource("2_t1qki")]
-position = Vector2(574, 475)
-rotation = 0.3109983
-
 [node name="track_collision" type="Area2D" parent="." unique_id=1155102240]
 collision_layer = 0
 
@@ -51,37 +42,14 @@ rotation = 0.33804998
 scale = Vector2(1, 1.1132715)
 collision_layer = 0
 
+[node name="Sprite2D" type="Sprite2D" parent="Startline" unique_id=797002474]
+position = Vector2(-0.6117554, 1.1452332)
+rotation = 1.5421576
+scale = Vector2(0.8983242, 0.9999356)
+skew = 0.005529046
+texture = ExtResource("4_30y1k")
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Startline" unique_id=2022756072]
-scale = Vector2(0.59999955, 6.4000006)
-shape = SubResource("RectangleShape2D_sne7k")
-
-[node name="Checkpoint2" type="Area2D" parent="." unique_id=780151711]
-position = Vector2(881, 146.00003)
-rotation = 0.4613555
-scale = Vector2(1, 1.1132715)
-collision_layer = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Checkpoint2" unique_id=701190775]
-scale = Vector2(0.59999955, 6.4000006)
-shape = SubResource("RectangleShape2D_sne7k")
-
-[node name="Checkpoint3" type="Area2D" parent="." unique_id=1438769061]
-position = Vector2(421.00003, 187.00003)
-rotation = 0.8524252
-scale = Vector2(1, 1.1132715)
-collision_layer = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Checkpoint3" unique_id=581129258]
-scale = Vector2(0.59999955, 6.4000006)
-shape = SubResource("RectangleShape2D_sne7k")
-
-[node name="Checkpoint4" type="Area2D" parent="." unique_id=931705265]
-position = Vector2(148.00002, 456.00003)
-rotation = 0.8524252
-scale = Vector2(1, 1.1132715)
-collision_layer = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Checkpoint4" unique_id=1221467737]
 scale = Vector2(0.59999955, 6.4000006)
 shape = SubResource("RectangleShape2D_sne7k")
 
@@ -90,4 +58,28 @@ position = Vector2(-4.39373, 0)
 scale = Vector2(1.0357895, 1)
 curve = SubResource("Curve2D_30y1k")
 
+[node name="checkpoint holder" type="Node" parent="." unique_id=1504073670]
+
+[node name="checkpoint" parent="checkpoint holder" unique_id=170126571 instance=ExtResource("6_5c7gn")]
+position = Vector2(779, 409)
+rotation = 0.92558384
+scale = Vector2(1, 1.2721618)
+
+[node name="checkpoint2" parent="checkpoint holder" unique_id=444078707 instance=ExtResource("6_5c7gn")]
+position = Vector2(618, 144)
+rotation = 2.3590493
+scale = Vector2(1, 1.2721618)
+
+[node name="checkpoint3" parent="checkpoint holder" unique_id=411007919 instance=ExtResource("6_5c7gn")]
+position = Vector2(148, 284)
+rotation = 2.0557866
+scale = Vector2(1, 1.2721618)
+
+[node name="car holder" type="Node" parent="." unique_id=397771818]
+
+[node name="car" parent="car holder" unique_id=1158992222 instance=ExtResource("2_t1qki")]
+position = Vector2(574, 475)
+rotation = 0.3109983
+
 [connection signal="area_entered" from="track_collision" to="." method="_on_track_collision_area_entered"]
+[connection signal="area_entered" from="Startline" to="." method="_on_startline_area_entered"]

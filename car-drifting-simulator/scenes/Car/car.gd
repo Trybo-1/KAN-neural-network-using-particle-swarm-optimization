@@ -15,9 +15,14 @@ var bounce_time = 0.8
 var bounce_tween : Tween
 var bounce_target : Vector2 = Vector2.ZERO
 
+var checkpoint_count: int = 3
+var checkpoints_passed: Array[int] = []
 
 func _ready() -> void:
 	pass
+
+func setup(cc: int) -> void:
+	checkpoint_count = cc
 
 func _process(delta: float) -> void:
 	throttle = Input.get_action_strength("accelerate")
@@ -58,3 +63,12 @@ func bounce(pos: Vector2) -> void:
 
 func hit_boundary(pos: Vector2) -> void:
 	bounce(pos)
+
+func lap_completed() -> void:
+	if checkpoint_count == checkpoints_passed.size():
+		print("Lap completed")
+	checkpoints_passed.clear()
+
+func hit_checkpoint(checkpoint_id: int) -> void:
+	if checkpoint_id not in checkpoints_passed:
+		checkpoints_passed.append(checkpoint_id)
