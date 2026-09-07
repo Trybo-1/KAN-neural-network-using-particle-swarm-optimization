@@ -3,6 +3,7 @@ extends Node
 class_name Track
 
 @onready var curve_path: Path2D = $centre_Line
+
 var curve : Curve2D
 
 func _ready() -> void:

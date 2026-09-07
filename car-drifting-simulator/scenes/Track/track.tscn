@@ -49,6 +49,7 @@ polygon = PackedVector2Array(372, 42, 335, 45, 298, 60, 241, 92, 190, 131, 143, 
 position = Vector2(585.99994, 480)
 rotation = 0.33804998
 scale = Vector2(1, 1.1132715)
+collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Startline" unique_id=2022756072]
 scale = Vector2(0.59999955, 6.4000006)
@@ -58,6 +59,7 @@ shape = SubResource("RectangleShape2D_sne7k")
 position = Vector2(881, 146.00003)
 rotation = 0.4613555
 scale = Vector2(1, 1.1132715)
+collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Checkpoint2" unique_id=701190775]
 scale = Vector2(0.59999955, 6.4000006)
@@ -67,6 +69,7 @@ shape = SubResource("RectangleShape2D_sne7k")
 position = Vector2(421.00003, 187.00003)
 rotation = 0.8524252
 scale = Vector2(1, 1.1132715)
+collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Checkpoint3" unique_id=581129258]
 scale = Vector2(0.59999955, 6.4000006)
@@ -76,6 +79,7 @@ shape = SubResource("RectangleShape2D_sne7k")
 position = Vector2(148.00002, 456.00003)
 rotation = 0.8524252
 scale = Vector2(1, 1.1132715)
+collision_layer = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Checkpoint4" unique_id=1221467737]
 scale = Vector2(0.59999955, 6.4000006)
