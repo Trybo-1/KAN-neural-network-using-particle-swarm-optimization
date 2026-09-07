@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://b7a0fnvegmja4" path="res://scenes/Car/car.tscn" id="2_t1qki"]
 [ext_resource type="Texture2D" uid="uid://dec3bup5l0rha" path="res://Assets/Images/FinishLine.png" id="4_30y1k"]
 [ext_resource type="PackedScene" uid="uid://b266e1h53ye62" path="res://scenes/utils/checkpoint.tscn" id="6_5c7gn"]
+[ext_resource type="PackedScene" uid="uid://b27nslyyuxich" path="res://scenes/RaceController/race_controller.tscn" id="7_mslun"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sne7k"]
 
@@ -80,6 +81,8 @@ scale = Vector2(1, 1.2721618)
 [node name="car" parent="car holder" unique_id=1158992222 instance=ExtResource("2_t1qki")]
 position = Vector2(574, 475)
 rotation = 0.3109983
+
+[node name="RaceController" parent="." unique_id=1507345539 instance=ExtResource("7_mslun")]
 
 [connection signal="area_entered" from="track_collision" to="." method="_on_track_collision_area_entered"]
 [connection signal="area_entered" from="Startline" to="." method="_on_startline_area_entered"]

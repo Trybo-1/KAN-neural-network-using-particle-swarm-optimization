@@ -2,6 +2,9 @@ extends Area2D
 
 class_name Car
 
+var car_number: int = 0
+var car_name: String = "car"
+
 var throttle = 0.0
 var velocity = 0.0
 @export var max_speed = 380
@@ -18,6 +21,8 @@ var bounce_target : Vector2 = Vector2.ZERO
 var checkpoint_count: int = 3
 var checkpoints_passed: Array[int] = []
 
+var lap_time: float = 0.0
+
 func _ready() -> void:
 	pass
 
@@ -25,6 +30,7 @@ func setup(cc: int) -> void:
 	checkpoint_count = cc
 
 func _process(delta: float) -> void:
+	lap_time += delta
 	throttle = Input.get_action_strength("accelerate")
 	steer = Input.get_axis("steer_left","steer_right")
 
@@ -66,8 +72,11 @@ func hit_boundary(pos: Vector2) -> void:
 
 func lap_completed() -> void:
 	if checkpoint_count == checkpoints_passed.size():
-		print("Lap completed")
+		var lcd : LapCompleteData = LapCompleteData.new(self,lap_time)
+		print(lcd)
+		EventHub.emit_on_lap_completed(lcd)
 	checkpoints_passed.clear()
+	lap_time = 0.0
 
 func hit_checkpoint(checkpoint_id: int) -> void:
 	if checkpoint_id not in checkpoints_passed:
