@@ -16,8 +16,8 @@ for _ in range(number_of_samples):
 
 
 for _ in range(20):
-    x1 = random.uniform(0, 12)
-    x2 = random.uniform(0, 12)
+    x1 = random.uniform(0, 10)
+    x2 = random.uniform(0, 10)
     test_inputs.append([x1, x2])
     test_targets.append(x1 + x2 - 2 * x1 * x2)
 
