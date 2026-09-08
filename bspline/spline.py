@@ -6,10 +6,8 @@ class Spline:
 
     def __init__(self, number_of_control_points, degree=3):
 
-        self.control_points = np.array([0.0] * number_of_control_points, dtype=float)
-
+        self.control_points = np.array(number_of_control_points, dtype=float)
         self.degree = degree
-
         self.knots = create_knot_vector(len(self.control_points), self.degree)
 
 
@@ -18,7 +16,6 @@ class Spline:
         output = 0
 
         for i in range(len(self.control_points)):
-
             influence = basis_function(i, self.degree, t, self.knots)
             output += (influence * self.control_points[i])
 
@@ -28,7 +25,6 @@ class Spline:
     def create_curve(self, resolution=500):
 
         curve_points = []
-
         t_values = np.linspace(self.knots[self.degree], self.knots[-self.degree - 1], resolution)
 
         for t in t_values:

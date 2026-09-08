@@ -103,20 +103,5 @@ plt.show()
 app = App(network)
 app.run()
 
-#3d plot of the continuous XOR function
-x1 = [inputs[0] for inputs in continuous_xor.inputs]
-x2 = [inputs[1] for inputs in continuous_xor.inputs]
-y = continuous_xor.targets
 
-fig = plt.figure()
-
-ax = fig.add_subplot(111, projection="3d")
-
-ax.scatter(x1, x2, y)
-
-ax.set_xlabel("X1")
-ax.set_ylabel("X2")
-ax.set_zlabel("Target")
-
-plt.show()
 

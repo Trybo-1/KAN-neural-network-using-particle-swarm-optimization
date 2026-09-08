@@ -1,5 +1,6 @@
+import math
 import random
-from bspline.spline1d import Spline1d as Spline
+from bspline.spline import Spline as Spline
 class EdgeFunction:
 
     def __init__(self,degree=2, number_of_control_points=2):
@@ -10,4 +11,8 @@ class EdgeFunction:
 
     def evaluate(self, input_value):
         # Calculate the function
-        return self.spline.evaluate(input_value)
+        normalized_input = self.normalize_input(input_value)
+        return self.spline.evaluate(normalized_input)
+
+    def normalize_input(self, x):
+        return x / (1 + math.fabs(x))
