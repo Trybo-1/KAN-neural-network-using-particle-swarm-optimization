@@ -19,3 +19,32 @@ texture = ExtResource("1_xbtw7")
 position = Vector2(-1.5, 0)
 rotation = 1.5707964
 shape = SubResource("RectangleShape2D_ylxtk")
+
+[node name="RayCast2D" type="RayCast2D" parent="." unique_id=1280280218]
+target_position = Vector2(0, 200)
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="RayCast2D4" type="RayCast2D" parent="." unique_id=929673363]
+rotation = -0.7853982
+target_position = Vector2(0, 200)
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="RayCast2D2" type="RayCast2D" parent="." unique_id=1649936223]
+rotation = -1.5707964
+target_position = Vector2(0, 200)
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="RayCast2D5" type="RayCast2D" parent="." unique_id=620399929]
+rotation = -2.3561945
+target_position = Vector2(0, 200)
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="RayCast2D3" type="RayCast2D" parent="." unique_id=899094108]
+rotation = 3.1415927
+target_position = Vector2(0, 200)
+collide_with_areas = true
+collide_with_bodies = false

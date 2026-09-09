@@ -1,6 +1,9 @@
 import socket
 import json
 
+from PSO.swarm import Swarm
+from kan.network import KANNetwork
+
 
 HOST = "127.0.0.1"
 PORT = 5000
@@ -37,3 +40,6 @@ print("Data sent to Godot")
 
 connection.close()
 server.close()
+
+def send_data_to_godot(network : KANNetwork, swarm : Swarm, fitness_history : list):
+    json_data = json.dumps(data) + "\n"
