@@ -42,4 +42,11 @@ connection.close()
 server.close()
 
 def send_data_to_godot(network : KANNetwork, swarm : Swarm, fitness_history : list):
+    data = {
+        "message": "Hello from Python",
+        "architecture": network.architecture,
+        "layer_values": network.get_layer_values(),
+        #"swarm_info": swarm.get_info(),
+        "fitness_history": fitness_history
+    }
     json_data = json.dumps(data) + "\n"
