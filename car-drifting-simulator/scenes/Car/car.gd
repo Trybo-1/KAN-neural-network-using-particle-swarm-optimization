@@ -23,6 +23,14 @@ var checkpoints_passed: Array[int] = []
 
 var lap_time: float = 0.0
 
+@onready var ray_cast_2d1: RayCast2D = $RayCast2D1
+@onready var ray_cast_2d_4: RayCast2D = $RayCast2D4
+@onready var ray_cast_2d_2: RayCast2D = $RayCast2D2
+@onready var ray_cast_2d_5: RayCast2D = $RayCast2D5
+@onready var ray_cast_2d_3: RayCast2D = $RayCast2D3
+
+@onready var rays : Array[RayCast2D] = [$RayCast2D1, $RayCast2D4, $RayCast2D2, $RayCast2D5, $RayCast2D3]
+
 func _ready() -> void:
 	pass
 
@@ -33,6 +41,7 @@ func _process(delta: float) -> void:
 	lap_time += delta
 	throttle = Input.get_action_strength("accelerate")
 	steer = Input.get_axis("steer_left","steer_right")
+	get_distances()
 
 
 func _physics_process(delta: float) -> void:
@@ -59,7 +68,6 @@ func apply_rotation(delta: float) -> void:
 	if velocity > 0.0:
 		rotate(get_steer_factor() * delta * steer)
 
-
 func bounce(pos: Vector2) -> void:
 	set_physics_process(false)
 	velocity = 0.0
@@ -81,3 +89,12 @@ func lap_completed() -> void:
 func hit_checkpoint(checkpoint_id: int) -> void:
 	if checkpoint_id not in checkpoints_passed:
 		checkpoints_passed.append(checkpoint_id)
+
+func get_distances() -> Array[float]:
+	var output : Array[float] = []
+	for ray in rays:
+		if ray.is_colliding():
+			output.append(global_position.distance_to(ray.get_collision_point()))
+		else :
+			output.append(0.0)
+	return output

@@ -29,7 +29,8 @@ scale = Vector2(0.8, 0.8)
 texture = ExtResource("1_wxxsa")
 
 [node name="track_collision" type="Area2D" parent="." unique_id=1155102240]
-collision_layer = 0
+collision_layer = 2
+collision_mask = 3
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="track_collision" unique_id=1922713178]
 polygon = PackedVector2Array(340, 175, 292, 210, 232, 266, 188, 343, 185, 380, 190, 413, 242, 420, 372, 398, 471, 391, 560, 404, 651, 431, 757, 474, 708, 436, 677, 401, 657, 356, 659, 300, 689, 253, 734, 231, 795, 226, 924, 245, 863, 203, 798, 169, 719, 141, 671, 182, 603, 259, 554, 306, 518, 329, 485, 332, 451, 317, 431, 299)
@@ -81,6 +82,7 @@ scale = Vector2(1, 1.2721618)
 [node name="car" parent="car holder" unique_id=1158992222 instance=ExtResource("2_t1qki")]
 position = Vector2(574, 475)
 rotation = 0.3109983
+collision_mask = 0
 
 [node name="RaceController" parent="." unique_id=1507345539 instance=ExtResource("7_mslun")]
 
