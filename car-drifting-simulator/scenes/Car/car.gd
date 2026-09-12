@@ -41,7 +41,6 @@ func _process(delta: float) -> void:
 	lap_time += delta
 	throttle = Input.get_action_strength("accelerate")
 	steer = Input.get_axis("steer_left","steer_right")
-	get_distances()
 
 
 func _physics_process(delta: float) -> void:
@@ -97,4 +96,10 @@ func get_distances() -> Array[float]:
 			output.append(global_position.distance_to(ray.get_collision_point()))
 		else :
 			output.append(0.0)
+	return output
+
+func get_car_info_for_kan() -> Array[float]:
+	var output: Array[float] = []
+	output.append(velocity) 
+	output.append_array(get_distances())
 	return output

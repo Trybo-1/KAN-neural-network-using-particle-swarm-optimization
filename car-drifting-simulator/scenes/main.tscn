@@ -2,8 +2,12 @@
 
 [ext_resource type="Script" uid="uid://bgdo0rqivq3uk" path="res://scripts/main.gd" id="1_o5qli"]
 [ext_resource type="PackedScene" uid="uid://bf77dajuei4sm" path="res://scenes/Track/track.tscn" id="2_0wfyh"]
+[ext_resource type="Script" uid="uid://75ut6m0dgtcf" path="res://scenes/socket.gd" id="3_sugp2"]
 
 [node name="Main" type="Node2D" unique_id=1909099459]
 script = ExtResource("1_o5qli")
 
 [node name="Track" parent="." unique_id=824789782 instance=ExtResource("2_0wfyh")]
+
+[node name="socket" type="Node" parent="." unique_id=1381254013]
+script = ExtResource("3_sugp2")
