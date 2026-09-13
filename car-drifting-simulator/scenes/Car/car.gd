@@ -5,11 +5,11 @@ class_name Car
 var car_number: int = 0
 var car_name: String = "car"
 
-var throttle = 0.0
+var throttle : float = 0.0
 var velocity = 0.0
 @export var max_speed = 380
 
-var steer = 4
+var steer: float = 4
 var steer_strength = 6
 var min_steer_factor = 0.5
 
@@ -22,6 +22,9 @@ var checkpoint_count: int = 3
 var checkpoints_passed: Array[int] = []
 
 var lap_time: float = 0.0
+
+var training_paused : bool = true
+signal physics_step_completed
 
 @onready var ray_cast_2d1: RayCast2D = $RayCast2D1
 @onready var ray_cast_2d_4: RayCast2D = $RayCast2D4
@@ -39,21 +42,27 @@ func setup(cc: int) -> void:
 
 func _process(delta: float) -> void:
 	lap_time += delta
-	throttle = Input.get_action_strength("accelerate")
-	steer = Input.get_axis("steer_left","steer_right")
+	#throttle = Input.is_action_pressed("accelerate")
+	#steer = Input.get_axis("steer_left","steer_right")
 
 
 func _physics_process(delta: float) -> void:
+	if training_paused:
+		return
+	
+	training_paused = true
 	apply_throttle(delta)
 	apply_rotation(delta)
 	position += transform.x * velocity * delta
+	
+	physics_step_completed.emit()
 
 
 func apply_throttle(delta: float) -> void:
 	if throttle > 0.0:
 		velocity += delta * 100.0
 	else: 
-		velocity -= delta * 150.0
+		velocity -= delta * 150.0 * 0
 	velocity = clampf(velocity,0.0,max_speed)
 
 func get_steer_factor() -> float:
@@ -95,7 +104,7 @@ func get_distances() -> Array[float]:
 		if ray.is_colliding():
 			output.append(global_position.distance_to(ray.get_collision_point()))
 		else :
-			output.append(0.0)
+			output.append(9999.0)
 	return output
 
 func get_car_info_for_kan() -> Array[float]:
@@ -103,3 +112,8 @@ func get_car_info_for_kan() -> Array[float]:
 	output.append(velocity) 
 	output.append_array(get_distances())
 	return output
+
+func set_steering(steering):
+	steer = steering
+func set_throttle(throttle):
+	self.throttle = throttle

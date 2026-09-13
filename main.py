@@ -9,7 +9,7 @@ from visualization.app import App
 import matplotlib.pyplot as plt
 
 #settings
-number_of_iterations = 1000
+number_of_iterations = 10
 target_fitness_threshold = 0.0005
 
 inertia_weight = 0.7
@@ -70,9 +70,10 @@ network.set_parameters(
 
 for inputs, target in zip(continuous_xor.test_inputs, continuous_xor.test_targets):
 
-    prediction = network.forward(inputs)[0]
+    prediction = network.forward(inputs)
+    print(prediction)
 
-    print(f"Input: {inputs} | " f"Target: {target:.2f} | " f"Prediction: {prediction:.4f}")
+    print(f"Input: {inputs} | " f"Target: {target:.2f} | " f"Prediction: {prediction[0]:.4f}")
 
 print(f"\nFinal best fitness: {swarm.global_best_fitness:.6f}")
 print(calculate_mean_square_error(network, swarm.global_best_position, continuous_xor.test_inputs, continuous_xor.test_targets))
