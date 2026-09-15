@@ -16,6 +16,10 @@ network = network.KANNetwork(
 
 swarm = swarm.Swarm(number_of_particles=20, number_of_parameters=len(network.get_parameters()))
 
+inertia_weight = 0.7
+cognitive_weight = 1.5
+social_weight = 1.5
+
 def respond_to_state(car_state):
     # Evaluate every particle
     return network.forward(car_state)
@@ -45,6 +49,11 @@ async def handle_client(websocket):
                 }
             }
 
+        if data["type"] == "evaluation":
+            swarm.update_particles(data["fitness"])
+            response = {
+                "type": "ready"
+            }
         
         await websocket.send(json.dumps(response))
 

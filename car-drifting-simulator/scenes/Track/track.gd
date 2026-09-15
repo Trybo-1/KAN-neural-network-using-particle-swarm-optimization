@@ -26,3 +26,6 @@ func get_direction_to_path(from_position: Vector2) -> Vector2:
 func _on_startline_area_entered(area: Area2D) -> void:
 	if area is Car:
 		area.lap_completed()
+
+func restart_race() -> void:
+	pass

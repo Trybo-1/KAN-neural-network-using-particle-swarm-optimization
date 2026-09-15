@@ -26,6 +26,9 @@ var lap_time: float = 0.0
 var training_paused : bool = true
 signal physics_step_completed
 
+var reward : float = 0.0
+var time_exceded: bool = false
+
 @onready var ray_cast_2d1: RayCast2D = $RayCast2D1
 @onready var ray_cast_2d_4: RayCast2D = $RayCast2D4
 @onready var ray_cast_2d_2: RayCast2D = $RayCast2D2
@@ -42,6 +45,7 @@ func setup(cc: int) -> void:
 
 func _process(delta: float) -> void:
 	lap_time += delta
+	reward -= delta
 	#throttle = Input.is_action_pressed("accelerate")
 	#steer = Input.get_axis("steer_left","steer_right")
 
@@ -50,12 +54,20 @@ func _physics_process(delta: float) -> void:
 	if training_paused:
 		return
 	
+	if lap_time > 60.0 and not time_exceded:
+		time_exceded = true
+		training_paused = true
+		print("time exceded")
+		EventHub.emit_on_lap_completed(LapCompleteData.new(self,lap_time,reward))
+		velocity = 0.0
+		return
+	
 	training_paused = true
 	apply_throttle(delta)
 	apply_rotation(delta)
 	position += transform.x * velocity * delta
-	
-	physics_step_completed.emit()
+	if not time_exceded:
+		physics_step_completed.emit()
 
 
 func apply_throttle(delta: float) -> void:
@@ -85,11 +97,13 @@ func bounce(pos: Vector2) -> void:
 
 func hit_boundary(pos: Vector2) -> void:
 	bounce(pos)
+	reward -= 80
 
 func lap_completed() -> void:
 	if checkpoint_count == checkpoints_passed.size():
-		var lcd : LapCompleteData = LapCompleteData.new(self,lap_time)
+		var lcd : LapCompleteData = LapCompleteData.new(self,lap_time,reward)
 		print(lcd)
+		reward += 300
 		EventHub.emit_on_lap_completed(lcd)
 	checkpoints_passed.clear()
 	lap_time = 0.0
@@ -97,6 +111,7 @@ func lap_completed() -> void:
 func hit_checkpoint(checkpoint_id: int) -> void:
 	if checkpoint_id not in checkpoints_passed:
 		checkpoints_passed.append(checkpoint_id)
+		reward += 100
 
 func get_distances() -> Array[float]:
 	var output : Array[float] = []
@@ -115,5 +130,5 @@ func get_car_info_for_kan() -> Array[float]:
 
 func set_steering(steering):
 	steer = steering
-func set_throttle(throttle):
-	self.throttle = throttle
+func set_throttle(throtle):
+	self.throttle = throtle

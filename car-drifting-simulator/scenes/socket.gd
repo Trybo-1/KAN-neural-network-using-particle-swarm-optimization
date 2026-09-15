@@ -13,6 +13,7 @@ var current_action := { "throttle": 1.0, "steering": -0.57623024322664 }
 @onready var car: Car = get_parent().get_node("Track/car holder/car")
 
 func _ready():
+	EventHub.on_lap_completed.connect(on_lap_completed)
 	car.physics_step_completed.connect(_on_physics_step_completed)
 	python_ready = false
 	var error := socket.connect_to_url("ws://127.0.0.1:5000")
@@ -22,6 +23,10 @@ func _ready():
 		return
 
 	print("Connecting to Python...")
+
+
+func on_lap_completed(info: LapCompleteData) -> void:
+	send_evaluation(info)
 
 
 func _process(_delta):
@@ -73,9 +78,6 @@ func _physics_process(_delta):
 	# Advance the game by exactly one physics step.
 	advance_simulation()
 
-	# Collect the new car state and send it to Python.
-	current_step += 1
-	send_state()
 
 
 func send_hello():
@@ -157,3 +159,18 @@ func advance_simulation():
 func _on_physics_step_completed():
 	current_step += 1
 	send_state()
+
+func send_evaluation(info: LapCompleteData):
+	var time = info.lap_time
+	var reward = info.reward
+	var message := {
+		"type": "evaluation",
+		"time": time,
+		"reward": reward
+	}
+	
+	socket.send_text(JSON.stringify(message))
+	
+	waiting_for_action = true
+	
+	print("evaluation sent")
