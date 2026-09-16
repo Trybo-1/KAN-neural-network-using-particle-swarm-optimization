@@ -46,6 +46,7 @@ func setup(cc: int) -> void:
 func _process(delta: float) -> void:
 	lap_time += delta
 	reward -= delta
+	reward += velocity/40
 	#throttle = Input.is_action_pressed("accelerate")
 	#steer = Input.get_axis("steer_left","steer_right")
 
@@ -106,7 +107,7 @@ func lap_completed() -> void:
 		reward += 300
 		EventHub.emit_on_lap_completed(lcd)
 	checkpoints_passed.clear()
-	lap_time = 0.0
+	#lap_time = 0.0
 
 func hit_checkpoint(checkpoint_id: int) -> void:
 	if checkpoint_id not in checkpoints_passed:
@@ -132,3 +133,12 @@ func set_steering(steering):
 	steer = steering
 func set_throttle(throtle):
 	self.throttle = throtle
+
+func reset():
+	throttle= 0.0
+	velocity = 0.0
+	checkpoints_passed.clear()
+	lap_time= 0.0
+	training_paused = true
+	reward= 0.0
+	time_exceded = false

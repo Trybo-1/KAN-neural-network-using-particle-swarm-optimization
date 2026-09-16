@@ -11,6 +11,8 @@ var current_step := 0
 var current_action := { "throttle": 1.0, "steering": -0.57623024322664 }
 
 @onready var car: Car = get_parent().get_node("Track/car holder/car")
+@onready var track: Track = $"../Track"
+
 
 func _ready():
 	EventHub.on_lap_completed.connect(on_lap_completed)
@@ -123,6 +125,9 @@ func handle_message(message: String):
 	elif message_type == "action":
 		handle_action(data)
 
+	elif message_type == "restart epoch":
+		start_race()
+
 
 func handle_action(data):
 	var received_step = data.get("step")
@@ -174,3 +179,8 @@ func send_evaluation(info: LapCompleteData):
 	waiting_for_action = true
 	
 	print("evaluation sent")
+
+func start_race():
+	track.restart_race()
+	current_step = 0
+	send_state()

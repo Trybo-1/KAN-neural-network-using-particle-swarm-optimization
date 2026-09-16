@@ -80,7 +80,7 @@ scale = Vector2(1, 1.2721618)
 [node name="car holder" type="Node" parent="." unique_id=397771818]
 
 [node name="car" parent="car holder" unique_id=1158992222 instance=ExtResource("2_t1qki")]
-position = Vector2(827, 531)
+position = Vector2(556, 469.99997)
 rotation = 0.3109983
 collision_mask = 0
 

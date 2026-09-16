@@ -14,11 +14,15 @@ network = network.KANNetwork(
     number_of_control_points=5
 )
 
-swarm = swarm.Swarm(number_of_particles=20, number_of_parameters=len(network.get_parameters()))
-
 inertia_weight = 0.7
 cognitive_weight = 1.5
 social_weight = 1.5
+
+num_of_particles = 20
+
+swarm = swarm.Swarm(num_of_particles, number_of_parameters=len(network.get_parameters()))
+
+
 
 def respond_to_state(car_state):
     # Evaluate every particle
@@ -27,11 +31,12 @@ def respond_to_state(car_state):
 
 async def handle_client(websocket):
     print("Godot connected")
+    particle_index = 0
 
     async for message in websocket:
         data = json.loads(message)
 
-        print("Received:", data)
+        #print("Received:", data)
 
         if data["type"] == "hello":
             response = {
@@ -50,9 +55,22 @@ async def handle_client(websocket):
             }
 
         if data["type"] == "evaluation":
-            swarm.update_particles(data["fitness"])
+
+            #update the particle's best position and fitness
+            swarm.particles[particle_index].update_best(-data["reward"])
+            swarm.update_global_best(swarm.particles[particle_index])
+            print(f"Particle {particle_index} | Best fitness: {swarm.particles[particle_index].best_fitness:.6f} | Global best fitness: {swarm.global_best_fitness:.6f}")
+
+            
+            particle_index = particle_index + 1
+            if particle_index >= num_of_particles:
+                particle_index = 0
+                swarm.update_particles(inertia_weight, cognitive_weight, social_weight)
+
+            network.set_parameters(swarm.particles[particle_index].position)
+
             response = {
-                "type": "ready"
+                "type": "restart epoch"
             }
         
         await websocket.send(json.dumps(response))

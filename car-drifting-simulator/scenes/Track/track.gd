@@ -28,4 +28,8 @@ func _on_startline_area_entered(area: Area2D) -> void:
 		area.lap_completed()
 
 func restart_race() -> void:
-	pass
+	for car in car_holder.get_children():
+		if car is Car:
+			car.reset()
+			car.position = Vector2(556,470)
+			car.rotation = 17.8
