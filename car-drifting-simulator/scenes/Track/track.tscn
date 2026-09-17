@@ -77,6 +77,16 @@ position = Vector2(148, 284)
 rotation = 2.0557866
 scale = Vector2(1, 1.2721618)
 
+[node name="checkpoint4" parent="checkpoint holder" unique_id=746067761 instance=ExtResource("6_5c7gn")]
+position = Vector2(639, 499.00003)
+rotation = 0.36069167
+scale = Vector2(1, 1.2721618)
+
+[node name="checkpoint5" parent="checkpoint holder" unique_id=1954150058 instance=ExtResource("6_5c7gn")]
+position = Vector2(682, 518)
+rotation = 0.36069167
+scale = Vector2(1, 1.2721618)
+
 [node name="car holder" type="Node" parent="." unique_id=397771818]
 
 [node name="car" parent="car holder" unique_id=1158992222 instance=ExtResource("2_t1qki")]

@@ -8,6 +8,7 @@ from kan import network
 HOST = "127.0.0.1"
 PORT = 5000
 
+
 network = network.KANNetwork(
     layer_sizes=[6, 18, 9, 2],
     degree=2,
@@ -32,6 +33,7 @@ def respond_to_state(car_state):
 async def handle_client(websocket):
     print("Godot connected")
     particle_index = 0
+    epoch = 0
 
     async for message in websocket:
         data = json.loads(message)
@@ -59,12 +61,13 @@ async def handle_client(websocket):
             #update the particle's best position and fitness
             swarm.particles[particle_index].update_best(-data["reward"])
             swarm.update_global_best(swarm.particles[particle_index])
-            print(f"Particle {particle_index} | Best fitness: {swarm.particles[particle_index].best_fitness:.6f} | Global best fitness: {swarm.global_best_fitness:.6f}")
+            print(f"Epoch {epoch} | Particle {particle_index} | Best fitness: {swarm.particles[particle_index].best_fitness:.6f} | Global best fitness: {swarm.global_best_fitness:.6f}")
 
             
             particle_index = particle_index + 1
             if particle_index >= num_of_particles:
                 particle_index = 0
+                epoch += 1
                 swarm.update_particles(inertia_weight, cognitive_weight, social_weight)
 
             network.set_parameters(swarm.particles[particle_index].position)
