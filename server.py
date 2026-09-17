@@ -29,6 +29,29 @@ def respond_to_state(car_state):
     # Evaluate every particle
     return network.forward(car_state)
 
+def save_best_kan():
+    best_kan = {
+        "architecture": network.architecture,
+        "degree": network.degree,
+        "number_of_control_points": network.number_of_control_points,
+        "parameters": swarm.global_best_position
+    }
+
+    with open("best_kan.kan", "w") as f:
+        json.dump(best_kan, f, indent=4)
+
+def load_best_kan():
+    try:
+        with open("best_kan.kan", "r") as f:
+            best_kan = json.load(f)
+            network.architecture = best_kan["architecture"]
+            network.degree = best_kan["degree"]
+            network.number_of_control_points = best_kan["number_of_control_points"]
+            network.set_parameters(best_kan["parameters"])
+            print("Best KAN loaded successfully.")
+    except FileNotFoundError:
+        print("No saved KAN found. Starting with a new network.")
+
 
 async def handle_client(websocket):
     print("Godot connected")
@@ -60,6 +83,11 @@ async def handle_client(websocket):
 
             #update the particle's best position and fitness
             swarm.particles[particle_index].update_best(-data["reward"])
+
+            if swarm.particles[particle_index].best_fitness < swarm.global_best_fitness:
+                save_best_kan()
+
+
             swarm.update_global_best(swarm.particles[particle_index])
             print(f"Epoch {epoch} | Particle {particle_index} | Best fitness: {swarm.particles[particle_index].best_fitness:.6f} | Global best fitness: {swarm.global_best_fitness:.6f}")
 
@@ -87,3 +115,4 @@ async def main():
 
 asyncio.run(main())
 
+        

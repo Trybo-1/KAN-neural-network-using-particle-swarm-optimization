@@ -72,4 +72,11 @@ class KANNetwork:
 
                     index += coefficient_count
 
-
+    def to_JSON(self):
+        network_dict = {
+            "architecture": self.architecture,
+            "degree": self.degree,
+            "number_of_control_points": self.number_of_control_points,
+            "parameters": self.get_parameters(),
+        }
+        return network_dict
