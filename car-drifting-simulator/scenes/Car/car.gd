@@ -46,7 +46,10 @@ func setup(cc: int) -> void:
 func _process(delta: float) -> void:
 	lap_time += delta
 	reward -= delta
-	reward += velocity/40
+	if velocity < 25:
+		reward -= 0.05
+	else:
+		reward += velocity/90
 	#throttle = Input.is_action_pressed("accelerate")
 	#steer = Input.get_axis("steer_left","steer_right")
 
@@ -104,7 +107,7 @@ func lap_completed() -> void:
 	if checkpoint_count == checkpoints_passed.size():
 		var lcd : LapCompleteData = LapCompleteData.new(self,lap_time,reward)
 		print(lcd)
-		reward += 300
+		reward += 30000
 		EventHub.emit_on_lap_completed(lcd)
 	checkpoints_passed.clear()
 	#lap_time = 0.0

@@ -103,6 +103,3 @@ plt.show()
 #visualization of the network
 app = App(network)
 app.run()
-
-
-
