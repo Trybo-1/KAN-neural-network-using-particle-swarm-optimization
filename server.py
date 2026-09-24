@@ -9,22 +9,6 @@ HOST = "127.0.0.1"
 PORT = 5000
 
 
-network = network.KANNetwork(
-    layer_sizes=[6, 18, 9, 2],
-    degree=2,
-    number_of_control_points=5
-)
-
-inertia_weight = 0.7
-cognitive_weight = 1.5
-social_weight = 1.5
-
-num_of_particles = 20
-
-swarm = swarm.Swarm(num_of_particles, number_of_parameters=len(network.get_parameters()))
-
-
-
 def respond_to_state(car_state):
     # Evaluate every particle
     return network.forward(car_state)
@@ -40,6 +24,8 @@ def save_best_kan():
     with open("best_kan.kan", "w") as f:
         json.dump(best_kan, f, indent=4)
 
+    print("Best KAN saved successfully.")
+
 def load_best_kan():
     try:
         with open("best_kan.kan", "r") as f:
@@ -49,8 +35,28 @@ def load_best_kan():
             network.number_of_control_points = best_kan["number_of_control_points"]
             network.set_parameters(best_kan["parameters"])
             print("Best KAN loaded successfully.")
+            return network
     except FileNotFoundError:
         print("No saved KAN found. Starting with a new network.")
+
+network = network.KANNetwork(
+    layer_sizes=[6, 18, 9, 2],
+    degree=2,
+    number_of_control_points=5
+)
+
+#network = load_best_kan()
+print(network.get_parameters())
+inertia_weight = 0.7
+cognitive_weight = 1.5
+social_weight = 1.5
+
+num_of_particles = 20
+
+swarm = swarm.Swarm(num_of_particles, number_of_parameters=len(network.get_parameters()))
+
+swarm.particles[0].position = network.get_parameters()
+swarm.global_best_position = network.get_parameters()
 
 
 async def handle_client(websocket):
