@@ -113,7 +113,10 @@ async def handle_client(websocket):
             epoch += 1
 
             response = {
-                "type": "restart epoch"
+                "type": "restart epoch",
+                "iteration": epoch,
+                "global_best_reward": -swarm.global_best_fitness,
+                "generation_best_reward": max([-particle.best_fitness for particle in swarm.particles])
             }
         
         await websocket.send(json.dumps(response))

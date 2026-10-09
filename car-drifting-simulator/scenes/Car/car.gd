@@ -29,7 +29,8 @@ signal physics_step_completed
 var reward : float = 0.0
 var time_exceded: bool = false
 var racing = true
-var available_steps: int = 1500
+var starting_steps: int = 300
+var available_steps = starting_steps
 
 @onready var ray_cast_2d1: RayCast2D = $RayCast2D1
 @onready var ray_cast_2d_4: RayCast2D = $RayCast2D4
@@ -152,4 +153,4 @@ func reset():
 	reward= 0.0
 	time_exceded = false
 	racing = true
-	available_steps = 1500
+	available_steps = starting_steps

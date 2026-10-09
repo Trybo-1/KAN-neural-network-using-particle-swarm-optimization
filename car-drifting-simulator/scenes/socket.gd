@@ -12,6 +12,9 @@ var current_action := { "throttle": [0.0], "steering": [0.0]}
 
 @onready var cars: Array = get_parent().get_node("Track/car holder").get_children()
 @onready var track: Track = $"../Track"
+@onready var plot: Control = $"../../../../../../visuals/Graph/Control"
+
+
 
 var cars_done = 0
 var number_of_cars_on_track = 20
@@ -135,6 +138,7 @@ func handle_message(message: String):
 		handle_action(data)
 
 	elif message_type == "restart epoch":
+		plot.add_training_point(int(data["iteration"]),float(data["global_best_reward"]),float(data["generation_best_reward"]))
 		start_race()
 
 

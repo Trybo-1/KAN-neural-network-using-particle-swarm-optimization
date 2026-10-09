@@ -23,6 +23,10 @@ EventHub="*uid://dmhvjkevuhe2a"
 
 window/stretch/mode="canvas_items"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/tau-plot/plugin.cfg")
+
 [input]
 
 accelerate={
