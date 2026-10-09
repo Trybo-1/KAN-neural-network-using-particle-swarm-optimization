@@ -6,7 +6,7 @@ var neuron_scene = preload("res://scenes/neuron.tscn")
 @export var selected_edge_panel: Panel
 
 var network_margin = Vector2(50, 50)
-var architecture = [2, 2, 1]
+var architecture = [6, 10,5, 2]
 
 var network = []
 var edges = []

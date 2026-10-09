@@ -9,9 +9,16 @@ HOST = "127.0.0.1"
 PORT = 5000
 
 
-def respond_to_state(car_state):
+def respond_to_states(particles,car_states):
     # Evaluate every particle
-    return network.forward(car_state)
+    outputs = []
+    count = 0
+    for state in car_states:
+        network.set_parameters(particles[count].position)
+        outputs.append(network.forward(state))
+        count += 1
+
+    return outputs
 
 def save_best_kan():
     best_kan = {
@@ -39,14 +46,25 @@ def load_best_kan():
     except FileNotFoundError:
         print("No saved KAN found. Starting with a new network.")
 
+def handle_evaluation(car_data):
+    for data in car_data:
+        particle_index = data["car"]
+        reward = data["reward"]
+        swarm.particles[particle_index].update_best(-reward)
+        if swarm.particles[particle_index].best_fitness < swarm.global_best_fitness:
+            save_best_kan()
+        swarm.update_global_best(swarm.particles[particle_index])
+        print(f"Particle {particle_index} | reward: {reward} | best reward: {-swarm.particles[particle_index].best_fitness}")
+
 network = network.KANNetwork(
-    layer_sizes=[6, 18, 9, 2],
+    layer_sizes=[6, 16, 4, 2],
     degree=2,
     number_of_control_points=5
 )
 
-#network = load_best_kan()
-print(network.get_parameters())
+print("Loading best KAN...")
+network = load_best_kan()
+
 inertia_weight = 0.7
 cognitive_weight = 1.5
 social_weight = 1.5
@@ -67,7 +85,7 @@ async def handle_client(websocket):
     async for message in websocket:
         data = json.loads(message)
 
-        #print("Received:", data)
+        #print("Received:", data['type'])
 
         if data["type"] == "hello":
             response = {
@@ -75,36 +93,24 @@ async def handle_client(websocket):
             }
 
         if data["type"] == "state":
-            outputs = respond_to_state(data["state"])
+            outputs = respond_to_states(swarm.particles, data["states"])
             response = {
                 "type": "action",
                 "step": data["step"],
                 "action": {
-                    "throttle": outputs[0]/(1+abs(outputs[0])),
-                    "steering": outputs[1]/(1+abs(outputs[1]))
+                    "throttle": [output[0]/(1+abs(output[0])) for output in outputs],
+                    "steering": [output[1]/(1+abs(output[1])) for output in outputs]
                 }
             }
 
         if data["type"] == "evaluation":
+            #print(data)
 
-            #update the particle's best position and fitness
-            swarm.particles[particle_index].update_best(-data["reward"])
-
-            if swarm.particles[particle_index].best_fitness < swarm.global_best_fitness:
-                save_best_kan()
-
-
-            swarm.update_global_best(swarm.particles[particle_index])
-            print(f"Epoch {epoch} | Particle {particle_index} | Best fitness: {swarm.particles[particle_index].best_fitness:.6f} | Global best fitness: {swarm.global_best_fitness:.6f}")
-
-            
-            particle_index = particle_index + 1
-            if particle_index >= num_of_particles:
-                particle_index = 0
-                epoch += 1
-                swarm.update_particles(inertia_weight, cognitive_weight, social_weight)
-
-            network.set_parameters(swarm.particles[particle_index].position)
+            print("Evaluating particles...")
+            handle_evaluation(data["car_data"])
+            swarm.update_particles(inertia_weight, cognitive_weight, social_weight)
+            print(f"Epoch {epoch} | Global best reward: {-swarm.global_best_fitness}")
+            epoch += 1
 
             response = {
                 "type": "restart epoch"

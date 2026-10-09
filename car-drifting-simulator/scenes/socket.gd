@@ -8,15 +8,17 @@ var python_ready := false
 
 var waiting_for_action := false
 var current_step := 0
-var current_action := { "throttle": 1.0, "steering": -0.57623024322664 }
+var current_action := { "throttle": [0.0], "steering": [0.0]}
 
-@onready var car: Car = get_parent().get_node("Track/car holder/car")
+@onready var cars: Array = get_parent().get_node("Track/car holder").get_children()
 @onready var track: Track = $"../Track"
 
+var cars_done = 0
+var number_of_cars_on_track = 20
 
 func _ready():
 	EventHub.on_lap_completed.connect(on_lap_completed)
-	car.physics_step_completed.connect(_on_physics_step_completed)
+	cars[-1].physics_step_completed.connect(_on_physics_step_completed)
 	python_ready = false
 	var error := socket.connect_to_url("ws://127.0.0.1:5000")
 
@@ -28,6 +30,10 @@ func _ready():
 
 
 func on_lap_completed(info: LapCompleteData) -> void:
+	cars_done += 1
+	if cars_done < number_of_cars_on_track: return
+	waiting_for_action = true
+	cars_done = 0
 	send_evaluation(info)
 
 
@@ -75,11 +81,11 @@ func _physics_process(_delta):
 		return
 
 	# Apply the action received from Python.
-	apply_action(current_action.get("throttle"), current_action.get("steering"))
+	for action in len(current_action.get("throttle")):
+		apply_action(cars[action],current_action.get("throttle")[action], current_action.get("steering")[action])
 
 	# Advance the game by exactly one physics step.
 	advance_simulation()
-
 
 
 func send_hello():
@@ -91,18 +97,21 @@ func send_hello():
 
 
 func send_state():
-	var car_state := car.get_car_info_for_kan()
+	var car_states := []
+	for car in cars:
+		car_states.append(car.get_car_info_for_kan())
 	var message := {
 		"type": "state",
 		"step": current_step,
-		"state": car_state
+		"states": car_states
 	}
+
 	socket.send_text(JSON.stringify(message))
 
 	waiting_for_action = true
 
 	print("Sent state: ", current_step)
-	print("Car state: ", car_state)
+	#print("Car state: ", car_states)
 
 
 func handle_message(message: String):
@@ -112,9 +121,9 @@ func handle_message(message: String):
 		print("Invalid JSON received")
 		return
 	if data != null:
-		print(data)
+		print("data is ok")
 
-	print("Received: ", data)
+	print("Received: ", data["type"])
 
 	var message_type = data.get("type")
 
@@ -142,15 +151,15 @@ func handle_action(data):
 		)
 		return
 
-	current_action = data.get("action", {})
+	current_action = data.get("action")
 
 	waiting_for_action = false
 
 	print("Action received for step ", current_step)
-	print("Action: ", current_action)
+	#print("Action: ", current_action)
 
 
-func apply_action(throttle, steering):
+func apply_action(car:Car,throttle, steering):
 	# This will eventually send the action to the Car node.
 	car.set_steering(steering)
 	car.set_throttle(throttle)
@@ -158,7 +167,8 @@ func apply_action(throttle, steering):
 
 
 func advance_simulation():
-	car.training_paused = false
+	for car in cars:
+		car.training_paused = false
 
 
 func _on_physics_step_completed():
@@ -166,13 +176,13 @@ func _on_physics_step_completed():
 	send_state()
 
 func send_evaluation(info: LapCompleteData):
-	var time = info.lap_time
-	var reward = info.reward
+	var data = track.race_controller.get_car_data()
+
 	var message := {
 		"type": "evaluation",
-		"time": time,
-		"reward": reward
+		"car_data": data
 	}
+	print("sending info")
 	
 	socket.send_text(JSON.stringify(message))
 	
@@ -184,3 +194,6 @@ func start_race():
 	track.restart_race()
 	current_step = 0
 	send_state()
+
+func cars_lap_completed():
+	pass

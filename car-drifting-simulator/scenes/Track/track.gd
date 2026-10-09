@@ -5,15 +5,20 @@ class_name Track
 @onready var curve_path: Path2D = $centre_Line
 @onready var checkpoint_holder: Node = $"checkpoint holder"
 @onready var car_holder: Node = $"car holder"
+@onready var race_controller: RaceController = $RaceController
 
 var curve : Curve2D
 
 func _ready() -> void:
 	curve = curve_path.curve
+	var cars: Array[Car] = []
 	
 	for car in car_holder.get_children():
 		if car is Car:
 			car.setup(checkpoint_holder.get_children().size())
+			cars.append(car)
+	race_controller.setup(cars)
+	pass
 
 func _on_track_collision_area_entered(area: Area2D) -> void:
 	if area is Car:area.hit_boundary(get_direction_to_path(area.position))
@@ -32,4 +37,4 @@ func restart_race() -> void:
 		if car is Car:
 			car.reset()
 			car.position = Vector2(556,470)
-			car.rotation = 17.8
+			car.rotation = 15.0

@@ -2,7 +2,7 @@ extends Area2D
 
 class_name Car
 
-var car_number: int = 0
+@export var car_number: int = 0
 var car_name: String = "car"
 
 var throttle : float = 0.0
@@ -28,6 +28,8 @@ signal physics_step_completed
 
 var reward : float = 0.0
 var time_exceded: bool = false
+var racing = true
+var available_steps: int = 1500
 
 @onready var ray_cast_2d1: RayCast2D = $RayCast2D1
 @onready var ray_cast_2d_4: RayCast2D = $RayCast2D4
@@ -45,11 +47,7 @@ func setup(cc: int) -> void:
 
 func _process(delta: float) -> void:
 	lap_time += delta
-	reward -= delta
-	if velocity < 25:
-		reward -= 0.05
-	else:
-		reward += velocity/90
+	#reward -= delta
 	#throttle = Input.is_action_pressed("accelerate")
 	#steer = Input.get_axis("steer_left","steer_right")
 
@@ -58,17 +56,28 @@ func _physics_process(delta: float) -> void:
 	if training_paused:
 		return
 	
-	if lap_time > 60.0 and not time_exceded:
+	available_steps -= 1
+	
+	reward -= 10
+	if velocity < 25:
+		reward -= 0.05
+	else:
+		reward += velocity/90
+	
+	if available_steps < 0 and not time_exceded:
 		time_exceded = true
 		training_paused = true
 		print("time exceded")
-		EventHub.emit_on_lap_completed(LapCompleteData.new(self,lap_time,reward))
+		racing = false
 		velocity = 0.0
+		EventHub.emit_on_lap_completed(LapCompleteData.new(self,lap_time,reward))
 		return
 	
 	training_paused = true
 	apply_throttle(delta)
 	apply_rotation(delta)
+	throttle = 0.0
+	steer = 0.0
 	position += transform.x * velocity * delta
 	if not time_exceded:
 		physics_step_completed.emit()
@@ -93,11 +102,8 @@ func apply_rotation(delta: float) -> void:
 		rotate(get_steer_factor() * delta * steer)
 
 func bounce(pos: Vector2) -> void:
-	set_physics_process(false)
 	velocity = 0.0
 	position = pos
-	await get_tree().create_timer(bounce_time).timeout
-	set_physics_process(true)
 
 func hit_boundary(pos: Vector2) -> void:
 	bounce(pos)
@@ -145,3 +151,5 @@ func reset():
 	training_paused = true
 	reward= 0.0
 	time_exceded = false
+	racing = true
+	available_steps = 1500
