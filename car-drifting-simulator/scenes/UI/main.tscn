@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dk64n3v8h8itq"]
 
 [ext_resource type="PackedScene" uid="uid://bf77dajuei4sm" path="res://scenes/Track/track.tscn" id="1_21340"]
+[ext_resource type="Script" uid="uid://dq41jgjggx3ag" path="res://scenes/UI/kan.gd" id="1_orlg7"]
 [ext_resource type="Script" uid="uid://75ut6m0dgtcf" path="res://scenes/socket.gd" id="2_es7p3"]
 [ext_resource type="Script" uid="uid://cae21lvpaxp4v" path="res://scenes/UI/curve.gd" id="3_5paq6"]
 [ext_resource type="Script" uid="uid://dnhvsf2wip771" path="res://addons/tau-plot/plot/plot.gd" id="3_xc5wj"]
@@ -47,14 +48,32 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PanelContainer" type="PanelContainer" parent="everything/content/VBoxContainer" unique_id=1481437881]
+[node name="kan_bspline" type="PanelContainer" parent="everything/content/VBoxContainer" unique_id=1481437881]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="BSpline" type="PanelContainer" parent="everything/content/VBoxContainer" unique_id=801558217]
+[node name="ColorRect" type="ColorRect" parent="everything/content/VBoxContainer/kan_bspline" unique_id=854520275]
+layout_mode = 2
+color = Color(0.19495127, 0.2265886, 0.3226891, 1)
+
+[node name="Control" type="Control" parent="everything/content/VBoxContainer/kan_bspline" unique_id=199107864]
+layout_mode = 2
+script = ExtResource("1_orlg7")
+
+[node name="Label" type="Label" parent="everything/content/VBoxContainer/kan_bspline" unique_id=1389696735]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_colors/font_color = Color(0.09207819, 0.60633165, 0.8040184, 1)
+text = "KAN - BSplines"
+
+[node name="kan_polynomial" type="PanelContainer" parent="everything/content/VBoxContainer" unique_id=801558217]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="Control" type="Control" parent="everything/content/VBoxContainer/kan_polynomial" unique_id=480354649]
+layout_mode = 2
 
 [node name="visuals" type="VBoxContainer" parent="everything/content" unique_id=1831165437]
 layout_mode = 2
@@ -97,6 +116,10 @@ script = ExtResource("2_es7p3")
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="ColorRect" type="ColorRect" parent="everything/content/visuals/Graph" unique_id=1591516858]
+layout_mode = 2
+color = Color(0.19495127, 0.2265886, 0.3226891, 1)
 
 [node name="Control" type="Control" parent="everything/content/visuals/Graph" unique_id=285095490]
 layout_mode = 2

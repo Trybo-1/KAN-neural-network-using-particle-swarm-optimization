@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="car drifting simulator"
-run/main_scene="uid://47u7ovkdb1x2"
+run/main_scene="uid://dk64n3v8h8itq"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 

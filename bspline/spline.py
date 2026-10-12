@@ -33,3 +33,14 @@ class Spline:
             curve_points.append(point)
 
         return np.array(curve_points)
+
+    def sample_curve(self, num_samples=25):
+
+        sampled_points = []
+        t_values = np.linspace(self.knots[self.degree], self.knots[-self.degree - 1], num_samples)
+
+        for t in t_values:
+            point = self.evaluate(t)
+            sampled_points.append([t, point])
+
+        return np.array(sampled_points)

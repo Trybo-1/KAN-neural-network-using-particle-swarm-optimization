@@ -29,7 +29,7 @@ signal physics_step_completed
 var reward : float = 0.0
 var time_exceded: bool = false
 var racing = true
-var starting_steps: int = 300
+var starting_steps: int = 150
 var available_steps = starting_steps
 
 @onready var ray_cast_2d1: RayCast2D = $RayCast2D1

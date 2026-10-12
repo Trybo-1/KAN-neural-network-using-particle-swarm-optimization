@@ -56,6 +56,23 @@ def handle_evaluation(car_data):
         swarm.update_global_best(swarm.particles[particle_index])
         print(f"Particle {particle_index} | reward: {reward} | best reward: {-swarm.particles[particle_index].best_fitness}")
 
+def sample_curves():
+    network.set_parameters(swarm.global_best_position)
+    message = []
+    for layer_index, layer in enumerate(network.layers):
+        for destination_index, neuron in enumerate(layer):
+            for source_index, edge_function in enumerate(neuron.edge_functions):
+                message.append(
+                    {
+                        "from_layer": layer_index,
+                        "from_neuron": source_index,
+                        "to_layer": layer_index + 1,
+                        "to_neuron": destination_index,
+                        "points": edge_function.spline.sample_curve(num_samples=10).tolist()
+                    }
+                )
+    return message
+
 network = network.KANNetwork(
     layer_sizes=[6, 16, 4, 2],
     degree=2,
@@ -89,7 +106,8 @@ async def handle_client(websocket):
 
         if data["type"] == "hello":
             response = {
-                "type": "ready"
+                "type": "ready",
+                "layer_sizes": network.architecture,
             }
 
         if data["type"] == "state":
@@ -112,18 +130,27 @@ async def handle_client(websocket):
             print(f"Epoch {epoch} | Global best reward: {-swarm.global_best_fitness}")
             epoch += 1
 
+            curve_data = sample_curves()
+            for curve in curve_data:
+                message = {
+                    "type": "curve",
+                    "curve_data": curve
+                }
+                await websocket.send(json.dumps(message))
+
             response = {
                 "type": "restart epoch",
                 "iteration": epoch,
                 "global_best_reward": -swarm.global_best_fitness,
                 "generation_best_reward": max([-particle.best_fitness for particle in swarm.particles])
             }
-        
+            print("done evaluating particles")
+
         await websocket.send(json.dumps(response))
 
 
 async def main():
-    async with websockets.serve(handle_client, HOST, PORT):
+    async with websockets.serve(handle_client, HOST, PORT, max_size=2**22):
         print(f"Waiting for Godot on ws://{HOST}:{PORT}")
         await asyncio.Future()
 

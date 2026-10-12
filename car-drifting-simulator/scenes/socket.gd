@@ -13,6 +13,8 @@ var current_action := { "throttle": [0.0], "steering": [0.0]}
 @onready var cars: Array = get_parent().get_node("Track/car holder").get_children()
 @onready var track: Track = $"../Track"
 @onready var plot: Control = $"../../../../../Graph/Control"
+@onready var kan_visualizer: KANVisualizer = $"../../../../../../VBoxContainer/kan_bspline/Control"
+
 
 
 
@@ -134,9 +136,15 @@ func handle_message(message: String):
 	if message_type == "ready":
 		python_ready = true
 		print("Python is ready!")
+		kan_visualizer.set_kan_architecture(data["layer_sizes"])
 
 	elif message_type == "action":
 		handle_action(data)
+
+	elif message_type == "curve":
+		var curve = data["curve_data"]
+		kan_visualizer.update_functions([curve])
+		
 
 	elif message_type == "restart epoch":
 		plot.add_training_point(int(data["iteration"]),float(data["global_best_reward"]),float(data["generation_best_reward"]))
@@ -168,7 +176,6 @@ func apply_action(car:Car,throttle, steering):
 	# This will eventually send the action to the Car node.
 	car.set_steering(steering)
 	car.set_throttle(throttle)
-
 
 
 func advance_simulation():
