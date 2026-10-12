@@ -12,7 +12,8 @@ var current_action := { "throttle": [0.0], "steering": [0.0]}
 
 @onready var cars: Array = get_parent().get_node("Track/car holder").get_children()
 @onready var track: Track = $"../Track"
-@onready var plot: Control = $"../../../../../../visuals/Graph/Control"
+@onready var plot: Control = $"../../../../../Graph/Control"
+
 
 
 

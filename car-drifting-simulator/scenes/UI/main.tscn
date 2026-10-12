@@ -32,6 +32,13 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 0
 
+[node name="controls" type="PanelContainer" parent="everything" unique_id=108217371]
+custom_minimum_size = Vector2(0, 65)
+custom_maximum_size = Vector2(-1, 100)
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.0
+
 [node name="content" type="HBoxContainer" parent="everything" unique_id=898566769]
 layout_mode = 2
 size_flags_vertical = 3
@@ -40,46 +47,51 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="controls" type="PanelContainer" parent="everything/content/VBoxContainer" unique_id=108217371]
-custom_minimum_size = Vector2(0, 65)
-custom_maximum_size = Vector2(-1, 100)
+[node name="PanelContainer" type="PanelContainer" parent="everything/content/VBoxContainer" unique_id=1481437881]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="track" type="PanelContainer" parent="everything/content/VBoxContainer" unique_id=1264031301]
+[node name="BSpline" type="PanelContainer" parent="everything/content/VBoxContainer" unique_id=801558217]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="visuals" type="VBoxContainer" parent="everything/content" unique_id=1831165437]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 2.3
+size_flags_stretch_ratio = 0.0
 
-[node name="Panel" type="Panel" parent="everything/content/VBoxContainer/track" unique_id=294174642]
-custom_minimum_size = Vector2(800, 0)
+[node name="track" type="PanelContainer" parent="everything/content/visuals" unique_id=1264031301]
+custom_maximum_size = Vector2(-1, 246.8)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Panel" type="Panel" parent="everything/content/visuals/track" unique_id=294174642]
+custom_minimum_size = Vector2(349.56, 0)
+custom_maximum_size = Vector2(-1, 250)
 layout_mode = 2
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="everything/content/VBoxContainer/track/Panel" unique_id=1480048370]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="everything/content/visuals/track/Panel" unique_id=1480048370]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = -0.001838238
 anchor_right = 1.0
 offset_left = -1.0
-offset_right = 293.8053
-offset_bottom = 638.82355
-scale = Vector2(0.732, 0.85)
+offset_right = 738.56104
+offset_bottom = 656.11005
+scale = Vector2(0.321, 0.373)
 offset_transform_enabled = true
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="everything/content/VBoxContainer/track/Panel/SubViewportContainer" unique_id=1018209733]
+[node name="SubViewport" type="SubViewport" parent="everything/content/visuals/track/Panel/SubViewportContainer" unique_id=1018209733]
 handle_input_locally = false
-size = Vector2i(1094, 638)
+size = Vector2i(1089, 656)
 render_target_update_mode = 4
 
-[node name="Track" parent="everything/content/VBoxContainer/track/Panel/SubViewportContainer/SubViewport" unique_id=824789782 instance=ExtResource("1_21340")]
+[node name="Track" parent="everything/content/visuals/track/Panel/SubViewportContainer/SubViewport" unique_id=824789782 instance=ExtResource("1_21340")]
 
-[node name="socket" type="Node" parent="everything/content/VBoxContainer/track/Panel/SubViewportContainer/SubViewport" unique_id=1492452063]
+[node name="socket" type="Node" parent="everything/content/visuals/track/Panel/SubViewportContainer/SubViewport" unique_id=1492452063]
 script = ExtResource("2_es7p3")
-
-[node name="visuals" type="VBoxContainer" parent="everything/content" unique_id=1831165437]
-layout_mode = 2
-size_flags_horizontal = 3
 
 [node name="Graph" type="PanelContainer" parent="everything/content/visuals" unique_id=767620704]
 custom_minimum_size = Vector2(0, 100)
@@ -100,18 +112,3 @@ grow_vertical = 2
 theme_type_variation = &"TauPlot"
 script = ExtResource("3_xc5wj")
 metadata/_custom_type_script = "uid://dnhvsf2wip771"
-
-[node name="Kan" type="PanelContainer" parent="everything/content/visuals" unique_id=964515532]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Control" type="Control" parent="everything/content/visuals/Kan" unique_id=273413271]
-layout_mode = 2
-
-[node name="BSpline" type="PanelContainer" parent="everything/content/visuals" unique_id=801558217]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Control" type="Control" parent="everything/content/visuals/BSpline" unique_id=463970324]
-layout_mode = 2
