@@ -1,11 +1,12 @@
 from kan.neuron import KANNeuron
 class KANNetwork:
 
-    def __init__(self, layer_sizes , degree = 2, number_of_control_points = 4):
+    def __init__(self, layer_sizes , degree = 2, number_of_control_points = 4, type = "bspline"):
         self.layers = []
         self.degree = degree
         self.architecture = layer_sizes.copy()
         self.number_of_control_points = number_of_control_points
+        self.type = type
 
         for layer_index in range(1, len(layer_sizes)):
 
@@ -15,7 +16,7 @@ class KANNetwork:
             layer = []
 
             for _ in range(output_size):
-                layer.append(KANNeuron(input_size = input_size, degree = degree, number_of_control_points = number_of_control_points))
+                layer.append(KANNeuron(input_size = input_size, degree = degree, number_of_control_points = number_of_control_points, type = type))
 
             self.layers.append(layer)
 
@@ -45,11 +46,19 @@ class KANNetwork:
 
         parameters = []
 
-        for layer in self.layers:
-            for neuron in layer:
-                for edge_function in neuron.edge_functions:
-                    # Add this edge's coefficients
-                    parameters.extend(edge_function.spline.control_points)
+        if self.type == "bspline":
+            for layer in self.layers:
+                for neuron in layer:
+                    for edge_function in neuron.edge_functions:
+                        # Add this edge's coefficients
+                        parameters.extend(edge_function.spline.control_points)
+        else: 
+            if self.type == "polynomial":
+                for layer in self.layers:
+                    for neuron in layer:
+                        for edge_function in neuron.edge_functions:
+                            # Add this edge's coefficients
+                            parameters.extend(edge_function.coefficients)
 
         return parameters
 
@@ -62,15 +71,27 @@ class KANNetwork:
                 "Number of parameters provided is incorrect!"
             )
 
-        for layer in self.layers:
-            for neuron in layer:
-                for edge_function in neuron.edge_functions:
+        if self.type == "bspline":
+            for layer in self.layers:
+                for neuron in layer:
+                    for edge_function in neuron.edge_functions:
 
-                    coefficient_count = len(edge_function.spline.control_points)
+                        coefficient_count = len(edge_function.spline.control_points)
 
-                    edge_function.spline.control_points = parameters[index:index + coefficient_count]
+                        edge_function.spline.control_points = parameters[index:index + coefficient_count]
 
-                    index += coefficient_count
+                        index += coefficient_count
+        else:
+            if self.type == "polynomial":
+                for layer in self.layers:
+                    for neuron in layer:
+                        for edge_function in neuron.edge_functions:
+
+                            coefficient_count = len(edge_function.coefficients)
+
+                            edge_function.coefficients = parameters[index:index + coefficient_count]
+
+                            index += coefficient_count
 
     def to_JSON(self):
         network_dict = {

@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://br4q8t2iwjx1a"]
+
+[ext_resource type="PackedScene" uid="uid://b7a0fnvegmja4" path="res://scenes/Car/car.tscn" id="1_k2iay"]
+[ext_resource type="Texture2D" uid="uid://pndhsqg7v7iu" path="res://Assets/Images/CarBlue.png" id="2_l3cfn"]
+
+[node name="car" unique_id=1158992222 instance=ExtResource("1_k2iay")]
+
+[node name="Sprite2D" type="Sprite2D" parent="." index="0" unique_id=62838019]
+rotation = 1.5707964
+scale = Vector2(0.23, 0.23)
+texture = ExtResource("2_l3cfn")

@@ -13,14 +13,16 @@ var current_action := { "throttle": [0.0], "steering": [0.0]}
 @onready var cars: Array = get_parent().get_node("Track/car holder").get_children()
 @onready var track: Track = $"../Track"
 @onready var plot: Control = $"../../../../../Graph/Control"
-@onready var kan_visualizer: KANVisualizer = $"../../../../../../VBoxContainer/kan_bspline/Control"
+#@onready var kan_visualizer: KANVisualizer = $"../../../../../../VBoxContainer/kan_bspline/Control"
+@onready var kan_visualizer_bspline: KANConnectionMatrix = $"../../../../../../VBoxContainer/kan_bspline/ScrollContainer/Control"
+@onready var kan_visualizer_polynomial: KANConnectionMatrix = $"../../../../../../VBoxContainer/kan_polynomial/ScrollContainer/Control"
 
 
 
 
 
 var cars_done = 0
-var number_of_cars_on_track = 20
+var number_of_cars_on_track = 40
 
 func _ready():
 	EventHub.on_lap_completed.connect(on_lap_completed)
@@ -136,18 +138,21 @@ func handle_message(message: String):
 	if message_type == "ready":
 		python_ready = true
 		print("Python is ready!")
-		kan_visualizer.set_kan_architecture(data["layer_sizes"])
+		kan_visualizer_bspline.set_kan_architecture(data["layer_sizes"])
+		kan_visualizer_polynomial.set_kan_architecture(data["layer_sizes"])
+		
 
 	elif message_type == "action":
 		handle_action(data)
 
-	elif message_type == "curve":
-		var curve = data["curve_data"]
-		kan_visualizer.update_functions([curve])
-		
+	elif message_type == "curve_bspline":
+		kan_visualizer_bspline.update_functions([data])
+	
+	elif message_type == "curve_polynomial":
+		kan_visualizer_polynomial.update_functions([data])
 
 	elif message_type == "restart epoch":
-		plot.add_training_point(int(data["iteration"]),float(data["global_best_reward"]),float(data["generation_best_reward"]))
+		plot.add_training_point(int(data["iteration"]),float(data["global_best_reward_bspline"]),float(data["global_best_reward_polynomial"]))
 		start_race()
 
 

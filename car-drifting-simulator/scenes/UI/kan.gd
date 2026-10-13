@@ -1,144 +1,102 @@
+
 extends Control
-class_name KANVisualizer
+class_name KANConnectionMatrix
 
-## Configure the architecture once:
-## set_kan_architecture([6, 16, 4, 2], "bspline")
-##
-## Then update the sampled function curves whenever needed:
-## update_functions([
-##   {
-##     "from_layer": 0,
-##     "from_neuron": 0,
-##     "to_layer": 1,
-##     "to_neuron": 0,
-##     "points": [[-2.0, 0.1], [-1.0, 0.5], [0.0, 0.8], [1.0, 0.4], [2.0, 0.2]]
-##   }
-## ])
-##
-## Each points list contains sampled [x, y] coordinates for that edge.
-## Send one entry per edge to update the entire network.
+signal edge_selected(from_layer: int, from_neuron: int, to_layer: int, to_neuron: int)
 
-@export var neuron_radius: float = 5.0
-@export_range(0.0, 1.0, 0.01) var edge_opacity: float = 0.34
-@export var min_function_width: float = 24.0
-@export var max_function_width: float = 62.0
-@export var function_height: float = 18.0
-@export var outer_margin: float = 12.0
-@export var layer_label_height: float = 20.0
+@export var min_cell_width: float = 54.0
+@export var min_cell_height: float = 42.0
+@export var label_width: float = 28.0
+@export var label_height: float = 22.0
+@export var layer_column_width: float = 76.0
+@export var layer_option_height: float = 34.0
+@export var curve_color:Color = Color(0.35, 0.75, 1.0, 1.0)
+
+var function_count: int = 0
 
 var layers: Array[int] = []
-var function_type := "bspline"
-var selected_edge_id := ""
+var selected_layer: int = 0
+var selected_edge_id: String = ""
 
-# Keyed by "from_layer:from_neuron:to_layer:to_neuron".
-var _functions: Dictionary = {}
-var _layer_positions: Array[PackedVector2Array] = []
-var _edge_layouts: Array[Dictionary] = []
-var _font: Font
+# Key: "from_layer:from_neuron:to_layer:to_neuron"
+var functions: Dictionary = {}
 
 
-func _ready() -> void:
-	_font = ThemeDB.fallback_font
-	resized.connect(_on_resized)
+func set_kan_architecture(layer_sizes: Array) -> void:
+	layers.clear()
+
+	for layer_size in layer_sizes:
+		layers.append(int(layer_size))
+
+	selected_layer = clampi(selected_layer, 0, max(0, layers.size() - 2))
+	_update_minimum_size()
+	queue_redraw()
 
 
-## Function 1: set architecture and calculate neuron/layout positions.
-## Call once per visualizer, or again if the architecture changes.
-func set_kan_architecture(
-	layer_sizes: Array,
-	edge_function_type: String = "bspline"
-) -> void:
-	var parsed_layers: Array[int] = []
-
-	for value in layer_sizes:
-		var count := int(value)
-		if count < 1:
-			push_warning("KANVisualizer: layer sizes must be positive.")
-			return
-		parsed_layers.append(count)
-
-	if parsed_layers.size() < 2:
-		push_warning("KANVisualizer: architecture needs at least two layers.")
+func set_layer_transition(layer_index: int) -> void:
+	if layer_index < 0 or layer_index >= layers.size() - 1:
 		return
 
-	layers = parsed_layers
-	function_type = edge_function_type.to_lower()
-	_functions.clear()
-	selected_edge_id = ""
-
-	_rebuild_layout()
+	selected_layer = layer_index
+	_update_minimum_size()
 	queue_redraw()
 
 
-## Function 2: update sampled curves for edges.
-## Each dictionary must contain from_layer, from_neuron, to_layer,
-## to_neuron and points (an Array of [x, y] pairs).
-## Existing edges not included in this update remain unchanged.
+
+
 func update_functions(function_data: Array) -> void:
-	for raw_edge in function_data:
-		if not raw_edge is Dictionary:
+	for function in function_data:
+		if not function is Dictionary:
 			continue
 
-		var from_layer := int(raw_edge.get("from_layer", -1))
-		var to_layer := int(raw_edge.get("to_layer", -1))
-		var from_neuron := int(raw_edge.get("from_neuron", -1))
-		var to_neuron := int(raw_edge.get("to_neuron", -1))
-
-		if not _valid_edge_indices(
-			from_layer, from_neuron, to_layer, to_neuron
-		):
+		if not function.has_all([
+			"from_layer", "from_neuron",
+			"to_layer", "to_neuron", "points"
+		]):
 			continue
 
-		var raw_points: Variant = raw_edge.get("points", [])
-		if not raw_points is Array:
+		var from_layer := int(function["from_layer"])
+		var from_neuron := int(function["from_neuron"])
+		var to_layer := int(function["to_layer"])
+		var to_neuron := int(function["to_neuron"])
+
+		if from_layer < 0 or from_layer >= layers.size() - 1:
+			continue
+		if to_layer != from_layer + 1:
+			continue
+		if from_neuron < 0 or from_neuron >= layers[from_layer]:
+			continue
+		if to_neuron < 0 or to_neuron >= layers[to_layer]:
 			continue
 
-		var points: Array[Vector2] = []
-		for raw_point in raw_points:
-			if raw_point is Array and raw_point.size() >= 2:
-				points.append(Vector2(
-					float(raw_point[0]),
-					float(raw_point[1])
+		var sampled_points := PackedVector2Array()
+
+		for point in function["points"]:
+			if point is Vector2:
+				sampled_points.append(point)
+			elif point is Array and point.size() >= 2:
+				sampled_points.append(Vector2(
+					float(point[0]), float(point[1])
 				))
-			elif raw_point is Vector2:
-				points.append(raw_point)
+			elif point is Dictionary and point.has("x") and point.has("y"):
+				sampled_points.append(Vector2(
+					float(point["x"]), float(point["y"])
+				))
 
-		if points.size() < 2:
+		if sampled_points.size() < 2:
 			continue
 
-		var id := _make_edge_id(
+
+		var edge_id := _make_edge_id(
 			from_layer, from_neuron, to_layer, to_neuron
 		)
-		_functions[id] = {
-			"id": id,
-			"from_layer": from_layer,
-			"from_neuron": from_neuron,
-			"to_layer": to_layer,
-			"to_neuron": to_neuron,
-			"points": points
-		}
 
-	_rebuild_edge_layouts()
+		functions[edge_id] = sampled_points
+
+
+	_update_minimum_size()
 	queue_redraw()
 
-
-func _valid_edge_indices(
-	from_layer: int,
-	from_neuron: int,
-	to_layer: int,
-	to_neuron: int
-) -> bool:
-	if layers.size() < 2:
-		return false
-	if from_layer < 0 or from_layer >= layers.size():
-		return false
-	if to_layer != from_layer + 1 or to_layer >= layers.size():
-		return false
-	if from_neuron < 0 or from_neuron >= layers[from_layer]:
-		return false
-	if to_neuron < 0 or to_neuron >= layers[to_layer]:
-		return false
-	return true
 
 
 func _make_edge_id(
@@ -152,134 +110,170 @@ func _make_edge_id(
 	]
 
 
-func _on_resized() -> void:
-	_rebuild_layout()
-	queue_redraw()
 
-
-func _rebuild_layout() -> void:
-	_layer_positions.clear()
-
-	if layers.is_empty() or size.x <= 1.0 or size.y <= 1.0:
-		_edge_layouts.clear()
+func _update_minimum_size() -> void:
+	if layers.size() < 2:
+		custom_minimum_size = Vector2.ZERO
 		return
 
-	var left := outer_margin
-	var right := maxf(left + 1.0, size.x - outer_margin)
-	var top := outer_margin 
-	var bottom := maxf(top + 1.0, size.y - outer_margin)
+	var rows: int = layers[selected_layer]
+	var columns: int = layers[selected_layer + 1]
 
-	var x_step := 0.0
-	if layers.size() > 1:
-		x_step = (right - left) / float(layers.size() - 1)
+	var selector_height := (layers.size() - 1) * layer_option_height
 
-	for layer_index in range(layers.size()):
-		var positions := PackedVector2Array()
-		var count: int = layers[layer_index]
-		var y_step := (bottom - top) / float(count + 1)
-		var x := left + x_step * layer_index
-
-		for neuron_index in range(count):
-			positions.append(Vector2(
-				x, top + y_step * float(neuron_index + 1)
-			))
-
-		_layer_positions.append(positions)
-
-	_rebuild_edge_layouts()
-
-
-func _rebuild_edge_layouts() -> void:
-	_edge_layouts.clear()
-
-	if layers.is_empty() or _layer_positions.size() != layers.size():
-		return
-
-	for edge in _functions.values():
-		var start: Vector2 = _layer_positions[
-			edge["from_layer"]
-		][edge["from_neuron"]]
-
-		var finish: Vector2 = _layer_positions[
-			edge["to_layer"]
-		][edge["to_neuron"]]
-
-		var distance := start.distance_to(finish)
-		var graph_width := clampf(
-			distance * 0.30,
-			min_function_width,
-			max_function_width
+	custom_minimum_size = Vector2(
+		layer_column_width + label_width + columns * min_cell_width,
+		max(
+			selector_height,
+			label_height + rows * min_cell_height
 		)
-		graph_width = minf(
-			graph_width,
-			maxf(12.0, absf(finish.x - start.x) * 0.72)
-		)
+	)
 
-		_edge_layouts.append({
-			"edge": edge,
-			"start": start,
-			"finish": finish,
-			"center": start.lerp(finish, 0.5),
-			"graph_width": graph_width/2.5,
-			"graph_height": minf(
-				function_height, maxf(8.0, distance * 0.20)
-			)/2.5
-		})
 
 
 func _draw() -> void:
-	if layers.is_empty() or _layer_positions.size() != layers.size():
+	if layers.size() < 2:
 		return
 
-	_draw_edges()
-	#_draw_layer_labels()
-	_draw_neurons()
+	var rows: int = layers[selected_layer]
+	var columns: int = layers[selected_layer + 1]
 
+	var selector_height := (layers.size() - 1) * layer_option_height
+	var matrix_x := layer_column_width + label_width
+	var matrix_width := float(max(
+		size.x - matrix_x,
+		columns * min_cell_width
+	))
+	var matrix_height := float(max(
+		size.y,
+		label_height + rows * min_cell_height
+	))
 
-func _draw_edges() -> void:
-	for layout in _edge_layouts:
-		var edge: Dictionary = layout["edge"]
-		var start: Vector2 = layout["start"]
-		var finish: Vector2 = layout["finish"]
-		var center: Vector2 = layout["center"]
-		var graph_width: float = layout["graph_width"]
-		var graph_height: float = layout["graph_height"]
+	var cell_width := matrix_width / columns
+	var cell_height := (matrix_height - label_height) / rows
+	var font := ThemeDB.fallback_font
+	var font_size := 12
 
-		var edge_id: String = edge["id"]
-		var selected := edge_id == selected_edge_id
-		var color := _edge_color(selected)
-		var line_color := Color(
-			color.r, color.g, color.b,
-			1.0 if selected else edge_opacity
+	# Layer-transition selector column.
+	draw_string(
+		font, Vector2(4, 15), "LAYERS",
+		HORIZONTAL_ALIGNMENT_LEFT, layer_column_width - 8, font_size
+	)
+
+	for layer_index in range(layers.size() - 1):
+		var option_rect := Rect2(
+			2,
+			label_height + layer_index * layer_option_height,
+			layer_column_width - 4,
+			layer_option_height - 2
 		)
 
-		var direction := (finish - start).normalized()
-		var half_width := graph_width * 0.5
-		var graph_start := center - direction * half_width
-		var graph_end := center + direction * half_width
+		var selected := layer_index == selected_layer
 
-		draw_line(
-			start, graph_start, line_color,
-			1.5 if selected else 1.0, true
+		draw_rect(
+			option_rect,
+			Color(0.32, 0.25, 0.14, 1.0) if selected
+			else Color(0.15, 0.17, 0.21, 1.0),
+			true
 		)
-		draw_line(
-			graph_end, finish, line_color,
-			1.5 if selected else 1.0, true
-		)
-
-		_draw_function_graph(
-			edge["points"], center, graph_width,
-			graph_height, color, selected
+		draw_rect(
+			option_rect,
+			Color(1.0, 0.65, 0.2, 1.0) if selected
+			else Color(0.35, 0.38, 0.43, 1.0),
+			false
 		)
 
+		draw_string(
+			font,
+			Vector2(option_rect.position.x + 4,
+				option_rect.position.y + 20),
+			"%d → %d" % [layer_index, layer_index + 1],
+			HORIZONTAL_ALIGNMENT_LEFT,
+			option_rect.size.x - 8,
+			font_size
+		)
 
-func _draw_function_graph(
-	points: Array,
-	center: Vector2,
-	graph_width: float,
-	graph_height: float,
-	color: Color,
-	selected: bool
+	# Matrix title and destination neuron labels.
+	draw_string(
+		font,
+		Vector2(matrix_x, 15),
+		"Connection functions: %d" % function_count,
+		HORIZONTAL_ALIGNMENT_LEFT,
+		matrix_width,
+		font_size
+	)
+
+	for column in range(columns):
+		var x := matrix_x + column * cell_width
+
+		draw_string(
+			font,
+			Vector2(x, label_height - 5),
+			str(column),
+			HORIZONTAL_ALIGNMENT_CENTER,
+			cell_width,
+			font_size
+		)
+
+	# Matrix cells.
+	for row in range(rows):
+		var y := label_height + row * cell_height
+
+		draw_string(
+			font,
+			Vector2(layer_column_width, y + cell_height * 0.65),
+			str(row),
+			HORIZONTAL_ALIGNMENT_LEFT,
+			label_width - 4,
+			font_size
+		)
+
+		for column in range(columns):
+			var x := matrix_x + column * cell_width
+			var cell_rect := Rect2(
+				x, y, cell_width, cell_height
+			).grow(-1.0)
+
+			var edge_id := _make_edge_id(
+				selected_layer, row,
+				selected_layer + 1, column
+			)
+
+			var is_selected := edge_id == selected_edge_id
+
+			draw_rect(
+				cell_rect,
+				Color(0.28, 0.22, 0.12, 1.0) if is_selected
+				else Color(0.12, 0.14, 0.17, 1.0),
+				true
+			)
+			draw_rect(
+				cell_rect,
+				Color(1.0, 0.65, 0.2, 1.0) if is_selected
+				else Color(0.35, 0.38, 0.43, 1.0),
+				false
+			)
+
+			if functions.has(edge_id):
+				_draw_function(
+					functions[edge_id], cell_rect, is_selected
+				)
+			else:
+				# Makes missing connections visibly different from curves.
+				draw_line(
+					cell_rect.position + Vector2(4, cell_rect.size.y / 2),
+					cell_rect.position + Vector2(
+						cell_rect.size.x - 4, cell_rect.size.y / 2
+					),
+					Color(0.3, 0.32, 0.36, 0.8),
+					1.0
+				)
+
+
+func _draw_function(
+	points: PackedVector2Array,
+	rect: Rect2,
+	is_selected: bool
 ) -> void:
 	if points.size() < 2:
 		return
@@ -295,96 +289,92 @@ func _draw_function_graph(
 		min_y = minf(min_y, point.y)
 		max_y = maxf(max_y, point.y)
 
-	if is_equal_approx(min_x, max_x):
-		max_x = min_x + 1.0
-	if is_equal_approx(min_y, max_y):
-		max_y = min_y + 1.0
+	var x_range: float = maxf(max_x - min_x, 0.0001)
+	var y_range: float = maxf(max_y - min_y, 0.0001)
 
-	var rect := Rect2(
-		center.x - graph_width * 0.5,
-		center.y - graph_height * 0.5,
-		graph_width,
-		graph_height
-	)
-
-	draw_rect(rect, Color(0.015, 0.045, 0.08, 0.92), true)
-	draw_rect(rect, color, false, 1.0)
+	var padding := 4.0
+	var plot_rect := rect.grow(-padding)
 
 	var curve := PackedVector2Array()
+
 	for point in points:
-		var px := remap(
-			point.x, min_x, max_x,
-			rect.position.x + 2.0, rect.end.x - 2.0
-		)
-		var py := remap(
-			point.y, min_y, max_y,
-			rect.end.y - 2.0, rect.position.y + 2.0
-		)
-		curve.append(Vector2(px, py))
+		var normalized_x := (point.x - min_x) / x_range
+		var normalized_y := (point.y - min_y) / y_range
 
-	draw_polyline(curve, color, 1.7 if selected else 1.1, true)
+		curve.append(Vector2(
+			plot_rect.position.x + normalized_x * plot_rect.size.x,
+			plot_rect.position.y + (1.0 - normalized_y) * plot_rect.size.y
+		))
 
 
-func _draw_layer_labels() -> void:
-	if _font == null:
+	if is_selected:
+		curve_color = Color(1.0, 0.72, 0.28, 1.0)
+
+	draw_polyline(curve, curve_color, 1.5, true)
+
+
+
+func _gui_input(event: InputEvent) -> void:
+	if not event is InputEventMouseButton:
 		return
 
-	for i in range(layers.size()):
-		var label := "Layer %d\n(%d)" % [i, layers[i]]
-		if i == 0:
-			label = "Input\n(%d)" % layers[i]
-		elif i == layers.size() - 1:
-			label = "Output\n(%d)" % layers[i]
+	if event.button_index != MOUSE_BUTTON_LEFT or not event.pressed:
+		return
 
-		var x: float = _layer_positions[i][0].x
-		draw_multiline_string(
-			_font,
-			Vector2(x - 35.0, outer_margin + 10.0),
-			label,
-			HORIZONTAL_ALIGNMENT_CENTER,
-			70.0,
-			12,
-			-1,
-			Color(0.76, 0.84, 0.94)
-		)
+	if layers.size() < 2:
+		return
 
+	var selector_y := float(event.position.y - label_height)
 
-func _draw_neurons() -> void:
-	for layer_index in range(_layer_positions.size()):
-		for position in _layer_positions[layer_index]:
-			draw_circle(
-				position, neuron_radius + 1.5,
-				Color(0.02, 0.05, 0.09)
-			)
-			draw_circle(position, neuron_radius, _neuron_color(layer_index))
+	# Click in the layer-selector column.
+	if event.position.x < layer_column_width:
+		if selector_y >= 0:
+			var layer_index := int(selector_y / layer_option_height)
 
+			if layer_index >= 0 and layer_index < layers.size() - 1:
+				selected_layer = layer_index
+				selected_edge_id = ""
+				_update_minimum_size()
+				queue_redraw()
+				accept_event()
+		return
 
-func _neuron_color(layer_index: int) -> Color:
-	if layer_index == 0:
-		return Color(0.15, 0.62, 1.0)
-	if layer_index == layers.size() - 1:
-		return Color(1.0, 0.76, 0.18)
-	if layer_index % 2 == 1:
-		return Color(0.67, 0.52, 1.0)
-	return Color(0.12, 0.82, 0.68)
+	var rows: int = layers[selected_layer]
+	var columns: int = layers[selected_layer + 1]
 
+	var matrix_x := layer_column_width + label_width
+	var matrix_width := float(max(
+		size.x - matrix_x,
+		columns * min_cell_width
+	))
+	var matrix_height := float(max(
+		size.y,
+		label_height + rows * min_cell_height
+	))
 
-func _edge_color(selected: bool) -> Color:
-	if selected:
-		return Color(1.0, 0.86, 0.22)
-	if function_type == "polynomial":
-		return Color(0.72, 0.38, 1.0)
-	return Color(0.12, 0.72, 1.0)
+	var cell_width := matrix_width / columns
+	var cell_height := (matrix_height - label_height) / rows
 
+	var local_x := float(event.position.x - matrix_x)
+	var local_y := float(event.position.y - label_height)
 
-## Optional helper for highlighting an edge by its stable ID.
-func select_edge(
-	from_layer: int,
-	from_neuron: int,
-	to_layer: int,
-	to_neuron: int
-) -> void:
+	if local_x < 0 or local_y < 0:
+		return
+
+	var column := int(local_x / cell_width)
+	var row := int(local_y / cell_height)
+
+	if row >= rows or column >= columns:
+		return
+
 	selected_edge_id = _make_edge_id(
-		from_layer, from_neuron, to_layer, to_neuron
+		selected_layer, row,
+		selected_layer + 1, column
 	)
+
+	edge_selected.emit(
+		selected_layer, row, selected_layer + 1, column
+	)
+
 	queue_redraw()
+	accept_event()

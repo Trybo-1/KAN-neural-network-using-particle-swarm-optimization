@@ -3,9 +3,10 @@
 [ext_resource type="Script" uid="uid://drtjtjavwbi8r" path="res://scenes/Track/track.gd" id="1_0jpli"]
 [ext_resource type="Texture2D" uid="uid://bv4p2obeldpqh" path="res://Assets/Images/GrassBg.png" id="1_t1qki"]
 [ext_resource type="Texture2D" uid="uid://c1m5vk3rejca7" path="res://Assets/Images/Monaco.png" id="1_wxxsa"]
-[ext_resource type="PackedScene" uid="uid://b7a0fnvegmja4" path="res://scenes/Car/car.tscn" id="2_t1qki"]
 [ext_resource type="Texture2D" uid="uid://dec3bup5l0rha" path="res://Assets/Images/FinishLine.png" id="4_30y1k"]
 [ext_resource type="PackedScene" uid="uid://b266e1h53ye62" path="res://scenes/utils/checkpoint.tscn" id="6_5c7gn"]
+[ext_resource type="PackedScene" uid="uid://br4q8t2iwjx1a" path="res://scenes/Car/car_1.tscn" id="6_m31cs"]
+[ext_resource type="PackedScene" uid="uid://y0af2ka2iwu8" path="res://scenes/Car/car_2.tscn" id="7_m31cs"]
 [ext_resource type="PackedScene" uid="uid://b27nslyyuxich" path="res://scenes/RaceController/race_controller.tscn" id="7_mslun"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sne7k"]
@@ -159,123 +160,202 @@ scale = Vector2(1, 2.081034)
 
 [node name="car holder" type="Node" parent="." unique_id=397771818]
 
-[node name="car" parent="car holder" unique_id=1158992222 instance=ExtResource("2_t1qki")]
-position = Vector2(556, 469.99997)
+[node name="car" parent="car holder" unique_id=1158992222 instance=ExtResource("6_m31cs")]
+position = Vector2(548, 474)
 rotation = 0.31066862
-collision_mask = 0
 
-[node name="car2" parent="car holder" unique_id=120032491 instance=ExtResource("2_t1qki")]
-position = Vector2(556, 469.99997)
+[node name="car2" parent="car holder" unique_id=1008403370 instance=ExtResource("6_m31cs")]
+position = Vector2(548, 474)
 rotation = 0.31066862
-collision_mask = 0
 car_number = 1
 
-[node name="car3" parent="car holder" unique_id=1832689541 instance=ExtResource("2_t1qki")]
-position = Vector2(556, 469.99997)
+[node name="car3" parent="car holder" unique_id=811146338 instance=ExtResource("6_m31cs")]
+position = Vector2(548, 474)
 rotation = 0.31066862
-collision_mask = 0
 car_number = 2
 
-[node name="car4" parent="car holder" unique_id=778279531 instance=ExtResource("2_t1qki")]
-position = Vector2(556, 469.99997)
+[node name="car4" parent="car holder" unique_id=1704781291 instance=ExtResource("6_m31cs")]
+position = Vector2(548, 474)
 rotation = 0.31066862
-collision_mask = 0
 car_number = 3
 
-[node name="car5" parent="car holder" unique_id=1887674290 instance=ExtResource("2_t1qki")]
-position = Vector2(556, 469.99997)
+[node name="car5" parent="car holder" unique_id=573817184 instance=ExtResource("6_m31cs")]
+position = Vector2(548, 474)
 rotation = 0.31066862
-collision_mask = 0
 car_number = 4
 
-[node name="car6" parent="car holder" unique_id=92394077 instance=ExtResource("2_t1qki")]
-position = Vector2(556, 469.99997)
+[node name="car6" parent="car holder" unique_id=1322338731 instance=ExtResource("6_m31cs")]
+position = Vector2(548, 474)
 rotation = 0.31066862
-collision_mask = 0
 car_number = 5
 
-[node name="car7" parent="car holder" unique_id=939999462 instance=ExtResource("2_t1qki")]
-position = Vector2(556, 469.99997)
+[node name="car7" parent="car holder" unique_id=1577951436 instance=ExtResource("6_m31cs")]
+position = Vector2(548, 474)
 rotation = 0.31066862
-collision_mask = 0
 car_number = 6
 
-[node name="car8" parent="car holder" unique_id=1026346137 instance=ExtResource("2_t1qki")]
-position = Vector2(556, 469.99997)
+[node name="car8" parent="car holder" unique_id=120569083 instance=ExtResource("6_m31cs")]
+position = Vector2(548, 474)
 rotation = 0.31066862
-collision_mask = 0
 car_number = 7
 
-[node name="car9" parent="car holder" unique_id=27838803 instance=ExtResource("2_t1qki")]
-position = Vector2(556, 469.99997)
+[node name="car9" parent="car holder" unique_id=401230583 instance=ExtResource("6_m31cs")]
+position = Vector2(548, 474)
 rotation = 0.31066862
-collision_mask = 0
 car_number = 8
 
-[node name="car10" parent="car holder" unique_id=1082050986 instance=ExtResource("2_t1qki")]
-position = Vector2(556, 469.99997)
+[node name="car10" parent="car holder" unique_id=1601961736 instance=ExtResource("6_m31cs")]
+position = Vector2(548, 474)
 rotation = 0.31066862
-collision_mask = 0
 car_number = 9
 
-[node name="car11" parent="car holder" unique_id=590668420 instance=ExtResource("2_t1qki")]
-position = Vector2(556, 469.99997)
+[node name="car11" parent="car holder" unique_id=937319900 instance=ExtResource("6_m31cs")]
+position = Vector2(548, 474)
 rotation = 0.31066862
-collision_mask = 0
 car_number = 10
 
-[node name="car12" parent="car holder" unique_id=1979862506 instance=ExtResource("2_t1qki")]
-position = Vector2(556, 469.99997)
+[node name="car12" parent="car holder" unique_id=1298909724 instance=ExtResource("6_m31cs")]
+position = Vector2(548, 474)
 rotation = 0.31066862
-collision_mask = 0
 car_number = 11
 
-[node name="car13" parent="car holder" unique_id=1423511602 instance=ExtResource("2_t1qki")]
-position = Vector2(556, 469.99997)
+[node name="car13" parent="car holder" unique_id=469385298 instance=ExtResource("6_m31cs")]
+position = Vector2(548, 474)
 rotation = 0.31066862
-collision_mask = 0
 car_number = 12
 
-[node name="car14" parent="car holder" unique_id=1139200304 instance=ExtResource("2_t1qki")]
-position = Vector2(556, 469.99997)
+[node name="car14" parent="car holder" unique_id=846102206 instance=ExtResource("6_m31cs")]
+position = Vector2(548, 474)
 rotation = 0.31066862
-collision_mask = 0
 car_number = 13
 
-[node name="car15" parent="car holder" unique_id=471478184 instance=ExtResource("2_t1qki")]
-position = Vector2(556, 469.99997)
+[node name="car15" parent="car holder" unique_id=741982298 instance=ExtResource("6_m31cs")]
+position = Vector2(548, 474)
 rotation = 0.31066862
-collision_mask = 0
 car_number = 14
 
-[node name="car16" parent="car holder" unique_id=443269409 instance=ExtResource("2_t1qki")]
-position = Vector2(556, 469.99997)
+[node name="car16" parent="car holder" unique_id=1059966200 instance=ExtResource("6_m31cs")]
+position = Vector2(548, 474)
 rotation = 0.31066862
-collision_mask = 0
 car_number = 15
 
-[node name="car17" parent="car holder" unique_id=4042223 instance=ExtResource("2_t1qki")]
-position = Vector2(556, 469.99997)
+[node name="car17" parent="car holder" unique_id=1328593366 instance=ExtResource("6_m31cs")]
+position = Vector2(548, 474)
 rotation = 0.31066862
-collision_mask = 0
 car_number = 16
 
-[node name="car18" parent="car holder" unique_id=122793349 instance=ExtResource("2_t1qki")]
-position = Vector2(556, 469.99997)
+[node name="car18" parent="car holder" unique_id=869104560 instance=ExtResource("6_m31cs")]
+position = Vector2(548, 474)
 rotation = 0.31066862
-collision_mask = 0
 car_number = 17
 
-[node name="car19" parent="car holder" unique_id=204562578 instance=ExtResource("2_t1qki")]
-position = Vector2(556, 469.99997)
+[node name="car19" parent="car holder" unique_id=1577621899 instance=ExtResource("6_m31cs")]
+position = Vector2(548, 474)
 rotation = 0.31066862
-collision_mask = 0
 car_number = 18
 
-[node name="car20" parent="car holder" unique_id=992618139 instance=ExtResource("2_t1qki")]
-position = Vector2(556, 469.99997)
+[node name="car20" parent="car holder" unique_id=756533229 instance=ExtResource("6_m31cs")]
+position = Vector2(548, 474)
 rotation = 0.31066862
-collision_mask = 0
+car_number = 19
+
+[node name="car21" parent="car holder" unique_id=958311395 instance=ExtResource("7_m31cs")]
+position = Vector2(548, 474)
+rotation = 0.31066862
+
+[node name="car22" parent="car holder" unique_id=1893297103 instance=ExtResource("7_m31cs")]
+position = Vector2(548, 474)
+rotation = 0.31066862
+car_number = 1
+
+[node name="car23" parent="car holder" unique_id=815149479 instance=ExtResource("7_m31cs")]
+position = Vector2(548, 474)
+rotation = 0.31066862
+car_number = 2
+
+[node name="car24" parent="car holder" unique_id=1615365138 instance=ExtResource("7_m31cs")]
+position = Vector2(548, 474)
+rotation = 0.31066862
+car_number = 3
+
+[node name="car25" parent="car holder" unique_id=2017931568 instance=ExtResource("7_m31cs")]
+position = Vector2(548, 474)
+rotation = 0.31066862
+car_number = 4
+
+[node name="car26" parent="car holder" unique_id=901632132 instance=ExtResource("7_m31cs")]
+position = Vector2(548, 474)
+rotation = 0.31066862
+car_number = 5
+
+[node name="car27" parent="car holder" unique_id=432065753 instance=ExtResource("7_m31cs")]
+position = Vector2(548, 474)
+rotation = 0.31066862
+car_number = 6
+
+[node name="car28" parent="car holder" unique_id=1099016097 instance=ExtResource("7_m31cs")]
+position = Vector2(548, 474)
+rotation = 0.31066862
+car_number = 7
+
+[node name="car29" parent="car holder" unique_id=634012467 instance=ExtResource("7_m31cs")]
+position = Vector2(548, 474)
+rotation = 0.31066862
+car_number = 8
+
+[node name="car30" parent="car holder" unique_id=1940061672 instance=ExtResource("7_m31cs")]
+position = Vector2(548, 474)
+rotation = 0.31066862
+car_number = 9
+
+[node name="car31" parent="car holder" unique_id=1727253030 instance=ExtResource("7_m31cs")]
+position = Vector2(548, 474)
+rotation = 0.31066862
+car_number = 10
+
+[node name="car32" parent="car holder" unique_id=1504508426 instance=ExtResource("7_m31cs")]
+position = Vector2(548, 474)
+rotation = 0.31066862
+car_number = 11
+
+[node name="car33" parent="car holder" unique_id=507575453 instance=ExtResource("7_m31cs")]
+position = Vector2(548, 474)
+rotation = 0.31066862
+car_number = 12
+
+[node name="car34" parent="car holder" unique_id=692574666 instance=ExtResource("7_m31cs")]
+position = Vector2(548, 474)
+rotation = 0.31066862
+car_number = 13
+
+[node name="car35" parent="car holder" unique_id=1261734639 instance=ExtResource("7_m31cs")]
+position = Vector2(548, 474)
+rotation = 0.31066862
+car_number = 14
+
+[node name="car36" parent="car holder" unique_id=2136258312 instance=ExtResource("7_m31cs")]
+position = Vector2(548, 474)
+rotation = 0.31066862
+car_number = 15
+
+[node name="car37" parent="car holder" unique_id=1897293739 instance=ExtResource("7_m31cs")]
+position = Vector2(548, 474)
+rotation = 0.31066862
+car_number = 16
+
+[node name="car38" parent="car holder" unique_id=69187250 instance=ExtResource("7_m31cs")]
+position = Vector2(548, 474)
+rotation = 0.31066862
+car_number = 17
+
+[node name="car39" parent="car holder" unique_id=427943115 instance=ExtResource("7_m31cs")]
+position = Vector2(548, 474)
+rotation = 0.31066862
+car_number = 18
+
+[node name="car40" parent="car holder" unique_id=391409172 instance=ExtResource("7_m31cs")]
+position = Vector2(548, 474)
+rotation = 0.31066862
 car_number = 19
 
 [node name="RaceController" parent="." unique_id=1507345539 instance=ExtResource("7_mslun")]

@@ -9,12 +9,19 @@ HOST = "127.0.0.1"
 PORT = 5000
 
 
-def respond_to_states(particles,car_states):
+def respond_to_states(network1, network2, particles1, particles2, car_states):
     # Evaluate every particle
     outputs = []
     count = 0
     for state in car_states:
-        network.set_parameters(particles[count].position)
+        if count < len(car_states) // 2:
+            network = network1
+            particles = particles1
+        else:
+            network = network2
+            particles = particles2
+
+        network.set_parameters(particles[count%len(particles)].position)
         outputs.append(network.forward(state))
         count += 1
 
@@ -46,20 +53,26 @@ def load_best_kan():
     except FileNotFoundError:
         print("No saved KAN found. Starting with a new network.")
 
-def handle_evaluation(car_data):
+def handle_evaluation(swarm1, swarm2, car_data):
+    counter = 0
     for data in car_data:
         particle_index = data["car"]
         reward = data["reward"]
-        swarm.particles[particle_index].update_best(-reward)
-        if swarm.particles[particle_index].best_fitness < swarm.global_best_fitness:
-            save_best_kan()
-        swarm.update_global_best(swarm.particles[particle_index])
-        print(f"Particle {particle_index} | reward: {reward} | best reward: {-swarm.particles[particle_index].best_fitness}")
+        if counter < len(car_data) // 2:
+            swarm1.particles[particle_index].update_best(-reward)
+            swarm1.update_global_best(swarm1.particles[particle_index])
+        else:
+            swarm2.particles[particle_index].update_best(-reward)
+            swarm2.update_global_best(swarm2.particles[particle_index])
 
-def sample_curves():
-    network.set_parameters(swarm.global_best_position)
+        #print(f"Swarm1 Particle {particle_index} | reward: {reward} | best reward: {-swarm1.particles[particle_index].best_fitness}")
+        #print(f"Swarm2 Particle {particle_index} | reward: {reward} | best reward: {-swarm2.particles[particle_index].best_fitness}")
+        counter += 1
+
+def sample_bspline_curves():
+    network_bspline.set_parameters(swarm_bspline.global_best_position)
     message = []
-    for layer_index, layer in enumerate(network.layers):
+    for layer_index, layer in enumerate(network_bspline.layers):
         for destination_index, neuron in enumerate(layer):
             for source_index, edge_function in enumerate(neuron.edge_functions):
                 message.append(
@@ -68,19 +81,43 @@ def sample_curves():
                         "from_neuron": source_index,
                         "to_layer": layer_index + 1,
                         "to_neuron": destination_index,
-                        "points": edge_function.spline.sample_curve(num_samples=10).tolist()
+                        "points": edge_function.spline.sample_curve(num_samples=25).tolist()
                     }
                 )
     return message
 
-network = network.KANNetwork(
+def sample_polynomial_curves():
+    network_polynomial.set_parameters(swarm_polynomial.global_best_position)
+    message = []
+    for layer_index, layer in enumerate(network_polynomial.layers):
+        for destination_index, neuron in enumerate(layer):
+            for source_index, edge_function in enumerate(neuron.edge_functions):
+                message.append(
+                    {
+                        "from_layer": layer_index,
+                        "from_neuron": source_index,
+                        "to_layer": layer_index + 1,
+                        "to_neuron": destination_index,
+                        "points": edge_function.sample_polynomial_curve(num_samples=25)
+                    }
+                )
+    return message
+
+network_bspline = network.KANNetwork(
     layer_sizes=[6, 16, 4, 2],
     degree=2,
-    number_of_control_points=5
+    number_of_control_points=5,
+)
+
+network_polynomial = network.KANNetwork(
+    layer_sizes=[6, 16, 4, 2],
+    degree=2,
+    number_of_control_points=4,
+    type="polynomial"
 )
 
 print("Loading best KAN...")
-network = load_best_kan()
+#network = load_best_kan()
 
 inertia_weight = 0.7
 cognitive_weight = 1.5
@@ -88,11 +125,14 @@ social_weight = 1.5
 
 num_of_particles = 20
 
-swarm = swarm.Swarm(num_of_particles, number_of_parameters=len(network.get_parameters()))
+swarm_bspline = swarm.Swarm(num_of_particles, number_of_parameters=len(network_bspline.get_parameters()))
+swarm_polynomial = swarm.Swarm(num_of_particles, number_of_parameters=len(network_polynomial.get_parameters()))
 
-swarm.particles[0].position = network.get_parameters()
-swarm.global_best_position = network.get_parameters()
+swarm_bspline.particles[0].position = network_bspline.get_parameters()
+swarm_bspline.global_best_position = network_bspline.get_parameters()
 
+swarm_polynomial.particles[0].position = network_polynomial.get_parameters()
+swarm_polynomial.global_best_position = network_polynomial.get_parameters()
 
 async def handle_client(websocket):
     print("Godot connected")
@@ -107,11 +147,11 @@ async def handle_client(websocket):
         if data["type"] == "hello":
             response = {
                 "type": "ready",
-                "layer_sizes": network.architecture,
+                "layer_sizes": network_bspline.architecture,
             }
 
         if data["type"] == "state":
-            outputs = respond_to_states(swarm.particles, data["states"])
+            outputs = respond_to_states(network_bspline, network_polynomial, swarm_bspline.particles, swarm_polynomial.particles, data["states"])
             response = {
                 "type": "action",
                 "step": data["step"],
@@ -125,24 +165,42 @@ async def handle_client(websocket):
             #print(data)
 
             print("Evaluating particles...")
-            handle_evaluation(data["car_data"])
-            swarm.update_particles(inertia_weight, cognitive_weight, social_weight)
-            print(f"Epoch {epoch} | Global best reward: {-swarm.global_best_fitness}")
+            handle_evaluation(swarm_bspline, swarm_polynomial, data["car_data"])
+            swarm_bspline.update_particles(inertia_weight, cognitive_weight, social_weight)
+            swarm_polynomial.update_particles(inertia_weight, cognitive_weight, social_weight)
+            print(f"Epoch {epoch} | Global best reward bspline: {-swarm_bspline.global_best_fitness}")
+            print(f"Epoch {epoch} | Global best reward polynomial: {-swarm_polynomial.global_best_fitness}")
             epoch += 1
 
-            curve_data = sample_curves()
+            curve_data = sample_bspline_curves()
             for curve in curve_data:
                 message = {
-                    "type": "curve",
-                    "curve_data": curve
+                    "type": "curve_bspline",
+                    "from_layer": curve["from_layer"],
+                    "from_neuron": curve["from_neuron"],
+                    "to_layer": curve["to_layer"],
+                    "to_neuron": curve["to_neuron"],
+                    "points": curve["points"]
+                }
+                await websocket.send(json.dumps(message))
+            
+            curve_data = sample_polynomial_curves()
+            for curve in curve_data:
+                message = {
+                    "type": "curve_polynomial",
+                    "from_layer": curve["from_layer"],
+                    "from_neuron": curve["from_neuron"],
+                    "to_layer": curve["to_layer"],
+                    "to_neuron": curve["to_neuron"],
+                    "points": curve["points"]
                 }
                 await websocket.send(json.dumps(message))
 
             response = {
                 "type": "restart epoch",
                 "iteration": epoch,
-                "global_best_reward": -swarm.global_best_fitness,
-                "generation_best_reward": max([-particle.best_fitness for particle in swarm.particles])
+                "global_best_reward_bspline": -swarm_bspline.global_best_fitness,
+                "global_best_reward_polynomial": -swarm_polynomial.global_best_fitness,
             }
             print("done evaluating particles")
 

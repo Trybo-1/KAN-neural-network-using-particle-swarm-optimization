@@ -10,8 +10,8 @@ const SAVE_PATH: String = "user://training_loss.csv"
 @onready var plot: TauPlot = $plot
 
 var iterations := PackedFloat64Array()
-var global_losses := PackedFloat64Array()
-var generation_losses := PackedFloat64Array()
+var bspline_fitness := PackedFloat64Array()
+var polynomial_fitness := PackedFloat64Array()
 
 
 func _ready() -> void:
@@ -19,7 +19,7 @@ func _ready() -> void:
 
 	if file != null:
 		file.store_line(
-            "iteration,global_best_loss,generation_best_loss"
+            "iteration,bspline_fitness,polynomial_fitness"
 		)
 		file.close()
 
@@ -34,8 +34,8 @@ func add_training_point(
 	generation_loss: float = NAN
 ) -> void:
 	iterations.append(float(iteration))
-	global_losses.append(global_loss)
-	generation_losses.append(generation_loss)
+	bspline_fitness.append(global_loss)
+	polynomial_fitness.append(generation_loss)
 
 	save_point(iteration, global_loss, generation_loss)
 	update_plot()
@@ -80,7 +80,7 @@ func update_plot() -> void:
             "Generation Best"
 		]),
 		iterations,
-		[global_losses, generation_losses]
+		[bspline_fitness, polynomial_fitness]
 			as Array[PackedFloat64Array]
 	)
 

@@ -1,0 +1,140 @@
+[gd_scene format=3 uid="uid://dk64n3v8h8itq"]
+
+[ext_resource type="PackedScene" uid="uid://bf77dajuei4sm" path="res://scenes/Track/track.tscn" id="1_21340"]
+[ext_resource type="Script" uid="uid://dq41jgjggx3ag" path="res://scenes/UI/kan.gd" id="1_orlg7"]
+[ext_resource type="Script" uid="uid://75ut6m0dgtcf" path="res://scenes/socket.gd" id="2_es7p3"]
+[ext_resource type="Script" uid="uid://cae21lvpaxp4v" path="res://scenes/UI/curve.gd" id="3_5paq6"]
+[ext_resource type="Script" uid="uid://dnhvsf2wip771" path="res://addons/tau-plot/plot/plot.gd" id="3_xc5wj"]
+
+[node name="Main" type="Control" unique_id=1074942545]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=403927318]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.7376468, 0.7390413, 0.8088064, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="everything" type="VBoxContainer" parent="." unique_id=1949878702]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 0
+
+[node name="controls" type="PanelContainer" parent="everything" unique_id=108217371]
+custom_minimum_size = Vector2(0, 65)
+custom_maximum_size = Vector2(-1, 100)
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.0
+
+[node name="content" type="HBoxContainer" parent="everything" unique_id=898566769]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="everything/content" unique_id=1541189226]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="kan_bspline" type="PanelContainer" parent="everything/content/VBoxContainer" unique_id=1481437881]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ColorRect" type="ColorRect" parent="everything/content/VBoxContainer/kan_bspline" unique_id=854520275]
+layout_mode = 2
+color = Color(0.19495127, 0.2265886, 0.3226891, 1)
+
+[node name="Label" type="Label" parent="everything/content/VBoxContainer/kan_bspline" unique_id=1389696735]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_colors/font_color = Color(0.09207819, 0.60633165, 0.8040184, 1)
+text = "KAN - BSplines"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="everything/content/VBoxContainer/kan_bspline" unique_id=1916650809]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="everything/content/VBoxContainer/kan_bspline/ScrollContainer" unique_id=199107864]
+layout_mode = 2
+script = ExtResource("1_orlg7")
+
+[node name="kan_polynomial" type="PanelContainer" parent="everything/content/VBoxContainer" unique_id=801558217]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Control" type="Control" parent="everything/content/VBoxContainer/kan_polynomial" unique_id=480354649]
+layout_mode = 2
+
+[node name="visuals" type="VBoxContainer" parent="everything/content" unique_id=1831165437]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.0
+
+[node name="track" type="PanelContainer" parent="everything/content/visuals" unique_id=1264031301]
+custom_maximum_size = Vector2(-1, 246.8)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Panel" type="Panel" parent="everything/content/visuals/track" unique_id=294174642]
+custom_minimum_size = Vector2(349.56, 0)
+custom_maximum_size = Vector2(-1, 250)
+layout_mode = 2
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="everything/content/visuals/track/Panel" unique_id=1480048370]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = -0.001838238
+anchor_right = 1.0
+offset_left = -1.0
+offset_right = 738.56104
+offset_bottom = 656.11005
+scale = Vector2(0.321, 0.373)
+offset_transform_enabled = true
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="everything/content/visuals/track/Panel/SubViewportContainer" unique_id=1018209733]
+handle_input_locally = false
+size = Vector2i(1089, 656)
+render_target_update_mode = 4
+
+[node name="Track" parent="everything/content/visuals/track/Panel/SubViewportContainer/SubViewport" unique_id=824789782 instance=ExtResource("1_21340")]
+
+[node name="socket" type="Node" parent="everything/content/visuals/track/Panel/SubViewportContainer/SubViewport" unique_id=1492452063]
+script = ExtResource("2_es7p3")
+
+[node name="Graph" type="PanelContainer" parent="everything/content/visuals" unique_id=767620704]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ColorRect" type="ColorRect" parent="everything/content/visuals/Graph" unique_id=1591516858]
+layout_mode = 2
+color = Color(0.19495127, 0.2265886, 0.3226891, 1)
+
+[node name="Control" type="Control" parent="everything/content/visuals/Graph" unique_id=285095490]
+layout_mode = 2
+script = ExtResource("3_5paq6")
+
+[node name="plot" type="PanelContainer" parent="everything/content/visuals/Graph/Control" unique_id=619759115]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"TauPlot"
+script = ExtResource("3_xc5wj")
+metadata/_custom_type_script = "uid://dnhvsf2wip771"

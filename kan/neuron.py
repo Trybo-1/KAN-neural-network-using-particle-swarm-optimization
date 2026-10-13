@@ -1,11 +1,11 @@
 from kan.edge_function import EdgeFunction
 class KANNeuron:
 
-    def __init__(self, input_size = 2, degree = 2, number_of_control_points = 4):
+    def __init__(self, input_size = 2, degree = 2, number_of_control_points = 4,type = "bspline"):
         self.edge_functions = []
 
         for _ in range(input_size):
-            self.edge_functions.append(EdgeFunction(degree = degree, number_of_control_points = number_of_control_points))
+            self.edge_functions.append(EdgeFunction(degree = degree, number_of_control_points = number_of_control_points,type = type))
 
     def forward(self, inputs):
 

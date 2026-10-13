@@ -56,24 +56,47 @@ size_flags_vertical = 3
 layout_mode = 2
 color = Color(0.19495127, 0.2265886, 0.3226891, 1)
 
-[node name="Control" type="Control" parent="everything/content/VBoxContainer/kan_bspline" unique_id=199107864]
+[node name="ScrollContainer" type="ScrollContainer" parent="everything/content/VBoxContainer/kan_bspline" unique_id=1916650809]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="everything/content/VBoxContainer/kan_bspline/ScrollContainer" unique_id=199107864]
 layout_mode = 2
 script = ExtResource("1_orlg7")
 
 [node name="Label" type="Label" parent="everything/content/VBoxContainer/kan_bspline" unique_id=1389696735]
 layout_mode = 2
 size_flags_horizontal = 0
-size_flags_vertical = 0
-theme_override_colors/font_color = Color(0.09207819, 0.60633165, 0.8040184, 1)
-text = "KAN - BSplines"
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(0.34901962, 0.7490196, 1, 1)
+text = "KAN - 
+BSplines
+"
 
 [node name="kan_polynomial" type="PanelContainer" parent="everything/content/VBoxContainer" unique_id=801558217]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Control" type="Control" parent="everything/content/VBoxContainer/kan_polynomial" unique_id=480354649]
+[node name="ColorRect" type="ColorRect" parent="everything/content/VBoxContainer/kan_polynomial" unique_id=186224423]
 layout_mode = 2
+color = Color(0.19495127, 0.2265886, 0.3226891, 1)
+
+[node name="ScrollContainer" type="ScrollContainer" parent="everything/content/VBoxContainer/kan_polynomial" unique_id=1295916517]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="everything/content/VBoxContainer/kan_polynomial/ScrollContainer" unique_id=1689166130]
+layout_mode = 2
+script = ExtResource("1_orlg7")
+curve_color = Color(1, 0, 0.18431373, 1)
+
+[node name="Label" type="Label" parent="everything/content/VBoxContainer/kan_polynomial" unique_id=782909992]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(1, 0, 0.18431373, 1)
+text = "KAN - 
+Polynomials
+"
 
 [node name="visuals" type="VBoxContainer" parent="everything/content" unique_id=1831165437]
 layout_mode = 2

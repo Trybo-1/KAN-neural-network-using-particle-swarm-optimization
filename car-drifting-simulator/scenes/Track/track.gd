@@ -37,4 +37,4 @@ func restart_race() -> void:
 		if car is Car:
 			car.reset()
 			car.position = Vector2(556,470)
-			car.rotation = 15.0
+			car.rotation = 0.3
