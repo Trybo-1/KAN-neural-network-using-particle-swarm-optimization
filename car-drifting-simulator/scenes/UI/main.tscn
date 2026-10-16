@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://dk64n3v8h8itq"]
 
 [ext_resource type="PackedScene" uid="uid://bf77dajuei4sm" path="res://scenes/Track/track.tscn" id="1_21340"]
+[ext_resource type="Texture2D" uid="uid://buykjrxx1ud3d" path="res://Assets/Images/noun_NeuralNetwork_8129183.svg" id="1_a7jsp"]
 [ext_resource type="Script" uid="uid://dq41jgjggx3ag" path="res://scenes/UI/kan.gd" id="1_orlg7"]
 [ext_resource type="Script" uid="uid://75ut6m0dgtcf" path="res://scenes/socket.gd" id="2_es7p3"]
+[ext_resource type="Script" uid="uid://dhhl0ehtbgxsw" path="res://scenes/UI/buttons.gd" id="2_v06ru"]
 [ext_resource type="Script" uid="uid://cae21lvpaxp4v" path="res://scenes/UI/curve.gd" id="3_5paq6"]
 [ext_resource type="Script" uid="uid://dnhvsf2wip771" path="res://addons/tau-plot/plot/plot.gd" id="3_xc5wj"]
 
@@ -40,6 +42,88 @@ layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.0
 
+[node name="HBoxContainer" type="HBoxContainer" parent="everything/controls" unique_id=1731668013]
+layout_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="everything/controls/HBoxContainer" unique_id=1992075534]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.86
+color = Color(0.19495127, 0.2265886, 0.3226891, 1)
+
+[node name="Label" type="Label" parent="everything/controls/HBoxContainer/ColorRect" unique_id=1808336902]
+layout_mode = 0
+offset_left = 86.0
+offset_top = 2.0000002
+offset_right = 367.0
+offset_bottom = 51.0
+theme_override_font_sizes/font_size = 34
+text = "KAN VISUALIZER
+"
+
+[node name="Label2" type="Label" parent="everything/controls/HBoxContainer/ColorRect" unique_id=347975226]
+layout_mode = 0
+offset_left = 87.0
+offset_top = 48.999996
+offset_right = 492.0
+offset_bottom = 72.0
+scale = Vector2(0.68, 0.68)
+text = "Kolmogorov-Arnold Network | Autonomous driving"
+
+[node name="Sprite2D" type="Sprite2D" parent="everything/controls/HBoxContainer/ColorRect" unique_id=904557]
+position = Vector2(43, 39)
+scale = Vector2(0.8727273, 0.73703706)
+texture = ExtResource("1_a7jsp")
+
+[node name="buttons" type="ColorRect" parent="everything/controls/HBoxContainer" unique_id=395783672]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 4.0
+color = Color(0.19495127, 0.2265886, 0.3226891, 1)
+script = ExtResource("2_v06ru")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="everything/controls/HBoxContainer/buttons" unique_id=504351331]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 2
+
+[node name="training_button" type="CheckButton" parent="everything/controls/HBoxContainer/buttons/HBoxContainer" unique_id=813261747]
+layout_mode = 2
+toggle_mode = false
+text = "Training"
+
+[node name="track_select" type="OptionButton" parent="everything/controls/HBoxContainer/buttons/HBoxContainer" unique_id=665473815]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+item_count = 3
+popup/item_0/text = "Track 1"
+popup/item_0/id = 0
+popup/item_1/text = "Track 2"
+popup/item_1/id = 1
+popup/item_2/text = "Track 3"
+popup/item_2/id = 2
+
+[node name="options" type="MenuButton" parent="everything/controls/HBoxContainer/buttons/HBoxContainer" unique_id=1717417467]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Options
+"
+item_count = 4
+popup/item_0/text = "Save Best"
+popup/item_0/id = 0
+popup/item_1/text = "Load Car"
+popup/item_1/id = 1
+popup/item_2/text = "Clear Track"
+popup/item_2/id = 2
+popup/item_3/text = "Reset Cars"
+popup/item_3/id = 3
+
 [node name="content" type="HBoxContainer" parent="everything" unique_id=898566769]
 layout_mode = 2
 size_flags_vertical = 3
@@ -62,6 +146,7 @@ layout_mode = 2
 [node name="Control" type="Control" parent="everything/content/VBoxContainer/kan_bspline/ScrollContainer" unique_id=199107864]
 layout_mode = 2
 script = ExtResource("1_orlg7")
+label_width = 44.0
 
 [node name="Label" type="Label" parent="everything/content/VBoxContainer/kan_bspline" unique_id=1389696735]
 layout_mode = 2
@@ -87,6 +172,7 @@ layout_mode = 2
 [node name="Control" type="Control" parent="everything/content/VBoxContainer/kan_polynomial/ScrollContainer" unique_id=1689166130]
 layout_mode = 2
 script = ExtResource("1_orlg7")
+label_width = 44.0
 curve_color = Color(1, 0, 0.18431373, 1)
 
 [node name="Label" type="Label" parent="everything/content/VBoxContainer/kan_polynomial" unique_id=782909992]

@@ -29,7 +29,7 @@ signal physics_step_completed
 var reward : float = 0.0
 var time_exceded: bool = false
 var racing = true
-var starting_steps: int = 300
+var starting_steps: int = 1200
 var available_steps = starting_steps
 
 @onready var ray_cast_2d1: RayCast2D = $RayCast2D1
@@ -100,7 +100,7 @@ func get_steer_factor() -> float:
 
 func apply_rotation(delta: float) -> void:
 	if velocity > 0.0:
-		rotate(get_steer_factor() * delta * steer)
+		rotate(steer_strength * delta * steer)
 
 func bounce(pos: Vector2) -> void:
 	velocity = 0.0
@@ -122,7 +122,7 @@ func lap_completed() -> void:
 func hit_checkpoint(checkpoint_id: int) -> void:
 	if checkpoint_id not in checkpoints_passed:
 		checkpoints_passed.append(checkpoint_id)
-		reward += 100
+		reward += 2000
 
 func get_distances() -> Array[float]:
 	var output : Array[float] = []

@@ -76,8 +76,8 @@ func update_plot() -> void:
 
 	var dataset := Dataset.make_shared_x_continuous(
 		PackedStringArray([
-			"Global Best",
-            "Generation Best"
+			"bspline_fitness",
+            "polynomial_fitness"
 		]),
 		iterations,
 		[bspline_fitness, polynomial_fitness]

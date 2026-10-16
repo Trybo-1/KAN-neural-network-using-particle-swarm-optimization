@@ -11,6 +11,7 @@ signal edge_selected(from_layer: int, from_neuron: int, to_layer: int, to_neuron
 @export var layer_column_width: float = 76.0
 @export var layer_option_height: float = 34.0
 @export var curve_color:Color = Color(0.35, 0.75, 1.0, 1.0)
+var original_color = curve_color
 
 var function_count: int = 0
 
@@ -306,9 +307,6 @@ func _draw_function(
 			plot_rect.position.y + (1.0 - normalized_y) * plot_rect.size.y
 		))
 
-
-	if is_selected:
-		curve_color = Color(1.0, 0.72, 0.28, 1.0)
 
 	draw_polyline(curve, curve_color, 1.5, true)
 

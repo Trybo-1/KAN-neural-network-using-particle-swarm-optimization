@@ -28,7 +28,7 @@ collide_with_bodies = false
 
 [node name="RayCast2D2" type="RayCast2D" parent="." unique_id=1649936223]
 rotation = -1.5707964
-target_position = Vector2(0, 200)
+target_position = Vector2(0, 300)
 collision_mask = 2
 collide_with_areas = true
 collide_with_bodies = false

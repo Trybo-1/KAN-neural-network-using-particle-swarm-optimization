@@ -6,7 +6,7 @@ class Particle:
 
         # Create the position
         self.position = []
-        self.maximum_velocity = 0.5
+        self.maximum_velocity = 0.4
 
         for _ in range(number_of_parameters):
             value = random.uniform(-1, 1)
@@ -62,3 +62,8 @@ class Particle:
 
             # Update position
             self.position[i] += self.velocity[i]
+
+            if self.position[i] > 1:
+                self.position[i] = 1    
+            if self.position[i] < -1:
+                self.position[i] = -1

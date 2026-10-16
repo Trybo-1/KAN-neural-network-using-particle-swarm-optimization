@@ -36,5 +36,5 @@ func restart_race() -> void:
 	for car in car_holder.get_children():
 		if car is Car:
 			car.reset()
-			car.position = Vector2(556,470)
-			car.rotation = 0.3
+			car.position = Vector2(481,91)
+			car.rotation = 0
