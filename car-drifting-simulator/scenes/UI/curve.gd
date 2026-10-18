@@ -124,3 +124,9 @@ func update_plot() -> void:
 		bindings.append(binding)
 
 	plot.plot_xy(dataset, xy, bindings)
+
+func get_curve(type: String):
+	if type.to_lower() == "polynomial":
+		return polynomial_fitness
+	else:
+		return bspline_fitness

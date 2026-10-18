@@ -138,8 +138,8 @@ func handle_message(message: String):
 	if message_type == "ready":
 		python_ready = true
 		print("Python is ready!")
-		kan_visualizer_bspline.set_kan_architecture(data["layer_sizes"])
-		kan_visualizer_polynomial.set_kan_architecture(data["layer_sizes"])
+		kan_visualizer_bspline.set_kan_architecture(data["layer_sizes_bspline"])
+		kan_visualizer_polynomial.set_kan_architecture(data["layer_sizes_polynomial"])
 		
 
 	elif message_type == "action":
@@ -154,6 +154,10 @@ func handle_message(message: String):
 	elif message_type == "restart epoch":
 		plot.add_training_point(int(data["iteration"]),float(data["global_best_reward_bspline"]),float(data["global_best_reward_polynomial"]))
 		start_race()
+
+	elif message_type == "best_cars_response":
+		save_car(data)
+		
 
 
 func handle_action(data):
@@ -178,7 +182,6 @@ func handle_action(data):
 
 
 func apply_action(car:Car,throttle, steering):
-	# This will eventually send the action to the Car node.
 	car.set_steering(steering)
 	car.set_throttle(throttle)
 
@@ -214,3 +217,27 @@ func start_race():
 
 func cars_lap_completed():
 	pass
+
+func request_best_car_info():
+	var message := {
+		"type": "best_cars_request",
+	}
+	
+	socket.send_text(JSON.stringify(message))
+
+func save_car(data: Dictionary):
+	var metadata = {
+		"architecture": data["architecture"],
+		"edge_function_type": data["edge_function_type"],
+		"degree": data["degree"],
+		"number_of_control_points": data["number_of_control_points"],
+		"fitness": data["fitness"]
+	}
+	var curve = {
+		"points": plot.get_curve(data["edge_function_type"])
+	}
+	var network = {
+		"parameters": data["parameters"]
+	}
+	
+	SavedCarStorage.save_best_car(metadata, network, curve)

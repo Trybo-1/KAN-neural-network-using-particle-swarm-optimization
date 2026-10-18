@@ -104,13 +104,13 @@ def sample_polynomial_curves():
     return message
 
 network_bspline = network.KANNetwork(
-    layer_sizes=[6, 2],
+    layer_sizes=[6, 16, 4, 2],
     degree=2,
     number_of_control_points=5,
 )
 
 network_polynomial = network.KANNetwork(
-    layer_sizes=[6, 2],
+    layer_sizes=[6, 16, 4, 2],
     degree=2,
     number_of_control_points=5,
     type="polynomial"
@@ -147,7 +147,8 @@ async def handle_client(websocket):
         if data["type"] == "hello":
             response = {
                 "type": "ready",
-                "layer_sizes": network_bspline.architecture,
+                "layer_sizes_bspline": network_bspline.architecture,
+                "layer_sizes_polynomial": network_polynomial.architecture,
             }
 
         if data["type"] == "state":
@@ -203,6 +204,42 @@ async def handle_client(websocket):
                 "global_best_reward_polynomial": -swarm_polynomial.global_best_fitness,
             }
             print("done evaluating particles")
+
+        if data["type"] == "best_cars_request":
+
+            architecture = network_bspline.architecture
+            degree = network_bspline.degree
+            edge_function_type = network_bspline.type
+            no_of_control_points = network_bspline.number_of_control_points
+            fitness_bspline = -swarm_bspline.global_best_fitness
+            best_position_bspline = swarm_bspline.global_best_position
+            print(edge_function_type)
+            message1 = {
+                "type": "best_cars_response",
+                "architecture": architecture,
+                "degree": degree,
+                "edge_function_type": edge_function_type,
+                "number_of_control_points": no_of_control_points,
+                "fitness": fitness_bspline,
+                "parameters": best_position_bspline,
+            }
+            await websocket.send(json.dumps(message1))
+            architecture = network_polynomial.architecture
+            degree = network_polynomial.degree
+            edge_function_type = network_polynomial.type
+            no_of_control_points = network_polynomial.number_of_control_points
+            fitness_polynomial = -swarm_polynomial.global_best_fitness
+            best_position_polynomial = swarm_polynomial.global_best_position
+            message2 = {
+                "type": "best_cars_response",
+                "architecture": architecture,
+                "degree": degree,
+                "edge_function_type": edge_function_type,
+                "number_of_control_points": no_of_control_points,
+                "fitness": fitness_polynomial,
+                "parameters": best_position_polynomial,
+            }
+            await websocket.send(json.dumps(message2))
 
         await websocket.send(json.dumps(response))
 

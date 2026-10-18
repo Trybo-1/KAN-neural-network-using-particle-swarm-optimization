@@ -1,0 +1,55 @@
+[gd_scene format=3 uid="uid://by6rejly0a8mn"]
+
+[ext_resource type="Script" uid="uid://0d3vtbgc02cg" path="res://scenes/UI/load_car_dialog.gd" id="1_qi7ko"]
+
+[node name="LoadCarContainer" type="PanelContainer" unique_id=54222984]
+custom_minimum_size = Vector2(650, 500)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_qi7ko")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1095088201]
+layout_mode = 2
+color = Color(0.42485005, 0.33067942, 1, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1960383385]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=688273312]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=2063316494]
+layout_mode = 2
+
+[node name="status_label" type="Label" parent="MarginContainer/VBoxContainer" unique_id=699434935]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer" unique_id=787069225]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="car_list" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer" unique_id=2067656231]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=236813245]
+custom_minimum_size = Vector2(0, 45)
+layout_mode = 2
+
+[node name="load_button" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=634483197]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Load Car"
+
+[node name="cancel_button" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=743878570]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Cancel / Close"
