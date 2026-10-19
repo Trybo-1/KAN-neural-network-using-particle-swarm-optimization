@@ -9,7 +9,6 @@ extends ColorRect
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	options.get_popup().id_pressed.connect(_on_menu_option_selected)
-
 	
 func _on_menu_option_selected(id: int) -> void:
 	match id:

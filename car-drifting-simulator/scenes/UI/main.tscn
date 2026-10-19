@@ -151,7 +151,10 @@ layout_mode = 2
 [node name="Control" type="Control" parent="MarginContainer/everything/content/VBoxContainer/kan_bspline/ScrollContainer" unique_id=199107864]
 layout_mode = 2
 script = ExtResource("1_orlg7")
-label_width = 44.0
+min_cell_width = 70.0
+min_cell_height = 70.0
+label_width = 35.0
+label_height = 35.0
 
 [node name="Label" type="Label" parent="MarginContainer/everything/content/VBoxContainer/kan_bspline" unique_id=1389696735]
 layout_mode = 2
@@ -177,7 +180,10 @@ layout_mode = 2
 [node name="Control" type="Control" parent="MarginContainer/everything/content/VBoxContainer/kan_polynomial/ScrollContainer" unique_id=1689166130]
 layout_mode = 2
 script = ExtResource("1_orlg7")
-label_width = 44.0
+min_cell_width = 70.0
+min_cell_height = 70.0
+label_width = 35.0
+label_height = 35.0
 curve_color = Color(1, 0, 0.18431373, 1)
 
 [node name="Label" type="Label" parent="MarginContainer/everything/content/VBoxContainer/kan_polynomial" unique_id=782909992]

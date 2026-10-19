@@ -68,6 +68,10 @@ handbrake={
 
 2d_physics/layer_1="car"
 
+[network]
+
+limits/debugger/max_queued_messages=5000
+
 [physics]
 
 2d/run_on_separate_thread=true

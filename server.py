@@ -104,13 +104,13 @@ def sample_polynomial_curves():
     return message
 
 network_bspline = network.KANNetwork(
-    layer_sizes=[6, 16, 4, 2],
+    layer_sizes=[6, 4, 2],
     degree=2,
     number_of_control_points=5,
 )
 
 network_polynomial = network.KANNetwork(
-    layer_sizes=[6, 16, 4, 2],
+    layer_sizes=[6, 4, 2],
     degree=2,
     number_of_control_points=5,
     type="polynomial"

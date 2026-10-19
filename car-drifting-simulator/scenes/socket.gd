@@ -118,7 +118,7 @@ func send_state():
 
 	waiting_for_action = true
 
-	print("Sent state: ", current_step)
+	#print("Sent state: ", current_step)
 	#print("Car state: ", car_states)
 
 
@@ -128,10 +128,10 @@ func handle_message(message: String):
 	if data == null:
 		print("Invalid JSON received")
 		return
-	if data != null:
-		print("data is ok")
+	#if data != null:
+		#print("data is ok")
 
-	print("Received: ", data["type"])
+	#print("Received: ", data["type"])
 
 	var message_type = data.get("type")
 
@@ -177,7 +177,7 @@ func handle_action(data):
 
 	waiting_for_action = false
 
-	print("Action received for step ", current_step)
+	#print("Action received for step ", current_step)
 	#print("Action: ", current_action)
 
 

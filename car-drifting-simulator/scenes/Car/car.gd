@@ -113,7 +113,7 @@ func hit_boundary(pos: Vector2) -> void:
 func lap_completed() -> void:
 	if checkpoint_count == checkpoints_passed.size():
 		var lcd : LapCompleteData = LapCompleteData.new(self,lap_time,reward)
-		print(lcd)
+		#print(lcd)
 		reward += 30000
 		EventHub.emit_on_lap_completed(lcd)
 	checkpoints_passed.clear()
