@@ -173,7 +173,6 @@ func _on_load_pressed() -> void:
 	car_selected.emit({
 		"car_data": selected_car
 	})
-	print(selected_car)
 
 
 func _on_cancel_pressed() -> void:

@@ -22,12 +22,25 @@ var current_action := { "throttle": [0.0], "steering": [0.0]}
 
 
 var cars_done = 0
-var number_of_cars_on_track = 40
+var number_of_cars_on_track
 
 func _ready():
+	print("SOCKET: _ready() called")
+
 	EventHub.on_lap_completed.connect(on_lap_completed)
-	cars[-1].physics_step_completed.connect(_on_physics_step_completed)
+
+	refresh_track_references()
+
+	print("SOCKET: Cars found: ", cars.size())
+	print("SOCKET: Track found: ", track)
+	print("SOCKET: Connecting to Python")
+	
+	number_of_cars_on_track = track.number_of_car_on_track
+
 	python_ready = false
+	connect_to_python()
+
+func connect_to_python():
 	var error := socket.connect_to_url("ws://127.0.0.1:5000")
 
 	if error != OK:
@@ -36,10 +49,9 @@ func _ready():
 
 	print("Connecting to Python...")
 
-
 func on_lap_completed(info: LapCompleteData) -> void:
 	cars_done += 1
-	if cars_done < number_of_cars_on_track: return
+	if cars_done < number_of_cars_on_track or not track.training_track: return
 	waiting_for_action = true
 	cars_done = 0
 	send_evaluation(info)
@@ -90,7 +102,8 @@ func _physics_process(_delta):
 
 	# Apply the action received from Python.
 	for action in len(current_action.get("throttle")):
-		apply_action(cars[action],current_action.get("throttle")[action], current_action.get("steering")[action])
+		if action < number_of_cars_on_track:
+			apply_action(cars[action],current_action.get("throttle")[action], current_action.get("steering")[action])
 
 	# Advance the game by exactly one physics step.
 	advance_simulation()
@@ -110,6 +123,7 @@ func send_state():
 		car_states.append(car.get_car_info_for_kan())
 	var message := {
 		"type": "state",
+		"training": track.training_track,
 		"step": current_step,
 		"states": car_states
 	}
@@ -152,7 +166,9 @@ func handle_message(message: String):
 		kan_visualizer_polynomial.update_functions([data])
 
 	elif message_type == "restart epoch":
-		plot.add_training_point(int(data["iteration"]),float(data["global_best_reward_bspline"]),float(data["global_best_reward_polynomial"]))
+		plot.add_training_point("bspline",int(data["iteration"]),float(data["global_best_reward_bspline"]))
+		plot.add_training_point("polynomial",int(data["iteration"]), float(data["global_best_reward_polynomial"]))
+
 		start_race()
 
 	elif message_type == "best_cars_response":
@@ -241,3 +257,135 @@ func save_car(data: Dictionary):
 	}
 	
 	SavedCarStorage.save_best_car(metadata, network, curve)
+
+
+func refresh_track_references() -> void:
+	current_action = { "throttle": [0.0], "steering": [0.0]}
+	var track_node := get_parent().get_node_or_null("Track")
+
+	if track_node == null:
+		push_error("Socket could not find the Track node.")
+		return
+
+	track = track_node as Track
+
+	var car_holder := track.get_node_or_null("car holder")
+
+	if car_holder == null:
+		push_error("Track is missing its car holder.")
+		return
+
+	cars = car_holder.get_children()
+
+	if cars.is_empty():
+		push_error("No cars found on the selected track.")
+		return
+
+	var last_car = cars[-1]
+
+	if not last_car.physics_step_completed.is_connected(
+		_on_physics_step_completed
+	):
+		last_car.physics_step_completed.connect(
+			_on_physics_step_completed
+		)
+
+	number_of_cars_on_track = cars.size()
+
+	print("Socket references refreshed.")
+	print("Cars found: ", cars.size())
+
+func disconnect_old_track() -> void:
+	for car in cars:
+		if is_instance_valid(car):
+			if car.physics_step_completed.is_connected(_on_physics_step_completed):
+				car.physics_step_completed.disconnect(_on_physics_step_completed)
+
+	cars.clear()
+	track = null
+
+
+func _on_load_car_container_car_selected(car_data: Dictionary) -> void:
+	print(car_data)
+	if track.training_track:
+		return
+	var all_data = car_data["car_data"]
+	var metadata = car_data["car_data"]["metadata"]
+	
+	if metadata["edge_function_type"] == "bspline":
+		kan_visualizer_bspline.set_kan_architecture(metadata["architecture"])
+	else:
+		kan_visualizer_polynomial.set_kan_architecture(metadata["architecture"])
+
+	var network_path = all_data["car_path"].path_join("network.json")
+	
+
+	if not FileAccess.file_exists(network_path):
+		push_error("Network file not found: " + network_path)
+		return
+
+	var file = FileAccess.open(network_path, FileAccess.READ)
+
+	if file == null:
+		push_error("Failed to open network.json")
+		return
+
+	var json_text = file.get_as_text()
+	file.close()
+
+	var json = JSON.new()
+	var error = json.parse(json_text)
+
+	if error != OK:
+		push_error("JSON parsing failed: " + json.get_error_message())
+		return
+
+	var parameters = json.data
+
+	var message = {
+		"type": "load_inference_network",
+		"architecture": metadata["architecture"],
+		"edge_function_type": metadata["edge_function_type"],
+		"degree": metadata["degree"],
+		"number_of_control_points": metadata["number_of_control_points"],
+		"parameters": parameters["parameters"]
+	}
+	
+	load_graph(all_data["car_path"].path_join("training_curve.json"), metadata["edge_function_type"])
+
+	socket.send_text(JSON.stringify(message))
+
+func load_graph(path: String, type: String):
+	
+	if not FileAccess.file_exists(path):
+		push_error("Network file not found: " + path)
+		return
+
+	var file = FileAccess.open(path, FileAccess.READ)
+
+	if file == null:
+		push_error("Failed to open network.json")
+		return
+
+	var json_text = file.get_as_text()
+	file.close()
+
+	var json = JSON.new()
+	var error = json.parse(json_text)
+
+	if error != OK:
+		push_error("JSON parsing failed: " + json.get_error_message())
+		return
+
+	var points = json.data["points"]
+
+	var count = 0
+	var mapped_points = []
+
+	for point in points:
+		mapped_points.append([count,point])
+		count+=1
+
+	plot.set_curve_points(type,mapped_points)
+
+	plot.update_plot()

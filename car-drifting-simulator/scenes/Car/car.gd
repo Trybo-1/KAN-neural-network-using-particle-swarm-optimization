@@ -32,6 +32,8 @@ var racing = true
 var starting_steps: int = 1200
 var available_steps = starting_steps
 
+@export var training_car:bool = true
+
 @onready var ray_cast_2d1: RayCast2D = $RayCast2D1
 @onready var ray_cast_2d_4: RayCast2D = $RayCast2D4
 @onready var ray_cast_2d_2: RayCast2D = $RayCast2D2
@@ -57,7 +59,8 @@ func _physics_process(delta: float) -> void:
 	if training_paused:
 		return
 	
-	available_steps -= 1
+	if training_car:
+		available_steps -= 1
 	
 	reward -= 10
 	if velocity < 25:

@@ -1,13 +1,13 @@
 [gd_scene format=3 uid="uid://bf77dajuei4sm"]
 
-[ext_resource type="Script" uid="uid://drtjtjavwbi8r" path="res://scenes/Track/track.gd" id="1_0jpli"]
-[ext_resource type="Texture2D" uid="uid://bv4p2obeldpqh" path="res://Assets/Images/GrassBg.png" id="1_t1qki"]
-[ext_resource type="Texture2D" uid="uid://bw48nm51i6v4h" path="res://Assets/Images/Silverstone.png" id="3_m31cs"]
-[ext_resource type="Texture2D" uid="uid://dec3bup5l0rha" path="res://Assets/Images/FinishLine.png" id="4_30y1k"]
-[ext_resource type="PackedScene" uid="uid://b266e1h53ye62" path="res://scenes/utils/checkpoint.tscn" id="6_5c7gn"]
-[ext_resource type="PackedScene" uid="uid://br4q8t2iwjx1a" path="res://scenes/Car/car_1.tscn" id="6_m31cs"]
-[ext_resource type="PackedScene" uid="uid://y0af2ka2iwu8" path="res://scenes/Car/car_2.tscn" id="7_m31cs"]
-[ext_resource type="PackedScene" uid="uid://b27nslyyuxich" path="res://scenes/RaceController/race_controller.tscn" id="7_mslun"]
+[ext_resource type="Script" uid="uid://drtjtjavwbi8r" path="res://scenes/Track/track.gd" id="1_kth6n"]
+[ext_resource type="Texture2D" uid="uid://bv4p2obeldpqh" path="res://Assets/Images/GrassBg.png" id="2_kth6n"]
+[ext_resource type="Texture2D" uid="uid://bw48nm51i6v4h" path="res://Assets/Images/Silverstone.png" id="3_couel"]
+[ext_resource type="Texture2D" uid="uid://dec3bup5l0rha" path="res://Assets/Images/FinishLine.png" id="4_80cgb"]
+[ext_resource type="PackedScene" uid="uid://b266e1h53ye62" path="res://scenes/utils/checkpoint.tscn" id="5_nvo32"]
+[ext_resource type="PackedScene" uid="uid://br4q8t2iwjx1a" path="res://scenes/Car/car_1.tscn" id="6_2dbo1"]
+[ext_resource type="PackedScene" uid="uid://y0af2ka2iwu8" path="res://scenes/Car/car_2.tscn" id="7_0de1r"]
+[ext_resource type="PackedScene" uid="uid://b27nslyyuxich" path="res://scenes/RaceController/race_controller.tscn" id="8_kegpk"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sne7k"]
 
@@ -17,17 +17,18 @@ _data = {
 }
 point_count = 11
 
-[node name="Track" type="Node" unique_id=824789782]
-script = ExtResource("1_0jpli")
+[node name="Silverstone" type="Node2D" unique_id=75153849]
+script = ExtResource("1_kth6n")
+car_start_position = Vector2(481, 91)
 
 [node name="Background" type="Sprite2D" parent="." unique_id=410553442]
 position = Vector2(630, 387)
-texture = ExtResource("1_t1qki")
+texture = ExtResource("2_kth6n")
 
 [node name="track1" type="Sprite2D" parent="." unique_id=1090655067]
 position = Vector2(571, 323)
 scale = Vector2(0.61, 0.61)
-texture = ExtResource("3_m31cs")
+texture = ExtResource("3_couel")
 
 [node name="track_collision" type="Area2D" parent="." unique_id=1155102240]
 collision_layer = 2
@@ -50,7 +51,7 @@ position = Vector2(-0.6117554, 1.1452332)
 rotation = 1.5421576
 scale = Vector2(0.8983242, 0.9999356)
 skew = 0.005529046
-texture = ExtResource("4_30y1k")
+texture = ExtResource("4_80cgb")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Startline" unique_id=2022756072]
 scale = Vector2(0.59999955, 6.4000006)
@@ -63,302 +64,301 @@ curve = SubResource("Curve2D_hsds2")
 
 [node name="checkpoint holder" type="Node" parent="." unique_id=1504073670]
 
-[node name="checkpoint3" parent="checkpoint holder" unique_id=411007919 instance=ExtResource("6_5c7gn")]
+[node name="checkpoint3" parent="checkpoint holder" unique_id=411007919 instance=ExtResource("5_nvo32")]
 position = Vector2(216, 270.00003)
 rotation = 1.6371129
 scale = Vector2(1, 1.2721618)
 
-[node name="checkpoint4" parent="checkpoint holder" unique_id=746067761 instance=ExtResource("6_5c7gn")]
+[node name="checkpoint4" parent="checkpoint holder" unique_id=746067761 instance=ExtResource("5_nvo32")]
 position = Vector2(704, 553.00006)
 rotation = 0.18772197
 scale = Vector2(1, 1.2721618)
 
-[node name="checkpoint11" parent="checkpoint holder" unique_id=1038452143 instance=ExtResource("6_5c7gn")]
+[node name="checkpoint11" parent="checkpoint holder" unique_id=1038452143 instance=ExtResource("5_nvo32")]
 position = Vector2(441, 444.00003)
 rotation = 1.5605586
 scale = Vector2(1, 1.2721618)
 
-[node name="checkpoint14" parent="checkpoint holder" unique_id=1137756482 instance=ExtResource("6_5c7gn")]
+[node name="checkpoint14" parent="checkpoint holder" unique_id=1137756482 instance=ExtResource("5_nvo32")]
 position = Vector2(334.00003, 547)
 rotation = 0.008219928
 scale = Vector2(1, 1.2721618)
 
-[node name="checkpoint15" parent="checkpoint holder" unique_id=2138975075 instance=ExtResource("6_5c7gn")]
+[node name="checkpoint15" parent="checkpoint holder" unique_id=2138975075 instance=ExtResource("5_nvo32")]
 position = Vector2(227.99998, 469.00003)
 rotation = 1.2576153
 scale = Vector2(1, 1.2721618)
 
-[node name="checkpoint16" parent="checkpoint holder" unique_id=550685863 instance=ExtResource("6_5c7gn")]
+[node name="checkpoint16" parent="checkpoint holder" unique_id=550685863 instance=ExtResource("5_nvo32")]
 position = Vector2(217, 376.99997)
 rotation = 1.4489323
 scale = Vector2(1, 1.2721618)
 
-[node name="checkpoint21" parent="checkpoint holder" unique_id=99415446 instance=ExtResource("6_5c7gn")]
+[node name="checkpoint21" parent="checkpoint holder" unique_id=99415446 instance=ExtResource("5_nvo32")]
 position = Vector2(894, 359)
 rotation = 1.7470276
 scale = Vector2(1, 1.2721618)
 
-[node name="checkpoint22" parent="checkpoint holder" unique_id=1609747887 instance=ExtResource("6_5c7gn")]
+[node name="checkpoint22" parent="checkpoint holder" unique_id=1609747887 instance=ExtResource("5_nvo32")]
 position = Vector2(917, 265)
 rotation = 4.9511204
 scale = Vector2(1, 1.2721618)
 
-[node name="checkpoint23" parent="checkpoint holder" unique_id=63386924 instance=ExtResource("6_5c7gn")]
+[node name="checkpoint23" parent="checkpoint holder" unique_id=63386924 instance=ExtResource("5_nvo32")]
 position = Vector2(254.00003, 159.99998)
 rotation = 2.5122569
 scale = Vector2(1, 1.2721618)
 
-[node name="checkpoint24" parent="checkpoint holder" unique_id=531837450 instance=ExtResource("6_5c7gn")]
+[node name="checkpoint24" parent="checkpoint holder" unique_id=531837450 instance=ExtResource("5_nvo32")]
 position = Vector2(462.00006, 347.00003)
 rotation = 2.5122569
 scale = Vector2(1, 1.7515466)
 
-[node name="checkpoint26" parent="checkpoint holder" unique_id=480944510 instance=ExtResource("6_5c7gn")]
+[node name="checkpoint26" parent="checkpoint holder" unique_id=480944510 instance=ExtResource("5_nvo32")]
 position = Vector2(646.00006, 94.000015)
 rotation = 3.1657672
 scale = Vector2(1, 1.2721618)
 
-[node name="checkpoint28" parent="checkpoint holder" unique_id=2051631897 instance=ExtResource("6_5c7gn")]
+[node name="checkpoint28" parent="checkpoint holder" unique_id=2051631897 instance=ExtResource("5_nvo32")]
 position = Vector2(396.00003, 88)
 rotation = 3.0806208
 scale = Vector2(1, 1.2721618)
 
-[node name="checkpoint29" parent="checkpoint holder" unique_id=1850326415 instance=ExtResource("6_5c7gn")]
+[node name="checkpoint29" parent="checkpoint holder" unique_id=1850326415 instance=ExtResource("5_nvo32")]
 position = Vector2(622, 359.00003)
 rotation = 4.023323
 scale = Vector2(1, 1.7280543)
 
-[node name="checkpoint30" parent="checkpoint holder" unique_id=1428934505 instance=ExtResource("6_5c7gn")]
+[node name="checkpoint30" parent="checkpoint holder" unique_id=1428934505 instance=ExtResource("5_nvo32")]
 position = Vector2(907, 155.99997)
 rotation = 4.1706743
 scale = Vector2(1, 1.2721618)
 
-[node name="checkpoint33" parent="checkpoint holder" unique_id=1441801446 instance=ExtResource("6_5c7gn")]
+[node name="checkpoint33" parent="checkpoint holder" unique_id=1441801446 instance=ExtResource("5_nvo32")]
 position = Vector2(784.99994, 100.999985)
 rotation = 3.311499
 scale = Vector2(1, 1.2721618)
 
-[node name="checkpoint6" parent="checkpoint holder" unique_id=394062019 instance=ExtResource("6_5c7gn")]
+[node name="checkpoint6" parent="checkpoint holder" unique_id=394062019 instance=ExtResource("5_nvo32")]
 position = Vector2(782.99994, 557)
 rotation = 0.020298004
 scale = Vector2(1, 1.2721618)
 
-[node name="checkpoint8" parent="checkpoint holder" unique_id=1309572295 instance=ExtResource("6_5c7gn")]
+[node name="checkpoint8" parent="checkpoint holder" unique_id=1309572295 instance=ExtResource("5_nvo32")]
 position = Vector2(877.99994, 433)
 rotation = 1.6662626
 scale = Vector2(1, 1.2721618)
 
-[node name="checkpoint9" parent="checkpoint holder" unique_id=566058132 instance=ExtResource("6_5c7gn")]
+[node name="checkpoint9" parent="checkpoint holder" unique_id=566058132 instance=ExtResource("5_nvo32")]
 position = Vector2(641, 430.99997)
 rotation = 1.6174259
 scale = Vector2(1, 1.2721618)
 
-[node name="checkpoint10" parent="checkpoint holder" unique_id=1305268092 instance=ExtResource("6_5c7gn")]
+[node name="checkpoint10" parent="checkpoint holder" unique_id=1305268092 instance=ExtResource("5_nvo32")]
 position = Vector2(876.00006, 533.00006)
 rotation = 2.0822377
 scale = Vector2(1, 2.081034)
 
 [node name="car holder" type="Node" parent="." unique_id=397771818]
 
-[node name="car" parent="car holder" unique_id=1158992222 instance=ExtResource("6_m31cs")]
+[node name="car" parent="car holder" unique_id=1158992222 instance=ExtResource("6_2dbo1")]
 position = Vector2(481, 91)
 rotation = 0.049625397
 
-[node name="car2" parent="car holder" unique_id=1008403370 instance=ExtResource("6_m31cs")]
-position = Vector2(481, 91)
-rotation = 0.049625397
-car_number = 1
-
-[node name="car3" parent="car holder" unique_id=811146338 instance=ExtResource("6_m31cs")]
-position = Vector2(481, 91)
-rotation = 0.049625397
-car_number = 2
-
-[node name="car4" parent="car holder" unique_id=1704781291 instance=ExtResource("6_m31cs")]
-position = Vector2(481, 91)
-rotation = 0.049625397
-car_number = 3
-
-[node name="car5" parent="car holder" unique_id=573817184 instance=ExtResource("6_m31cs")]
-position = Vector2(481, 91)
-rotation = 0.049625397
-car_number = 4
-
-[node name="car6" parent="car holder" unique_id=1322338731 instance=ExtResource("6_m31cs")]
-position = Vector2(481, 91)
-rotation = 0.049625397
-car_number = 5
-
-[node name="car7" parent="car holder" unique_id=1577951436 instance=ExtResource("6_m31cs")]
-position = Vector2(481, 91)
-rotation = 0.049625397
-car_number = 6
-
-[node name="car8" parent="car holder" unique_id=120569083 instance=ExtResource("6_m31cs")]
-position = Vector2(481, 91)
-rotation = 0.049625397
-car_number = 7
-
-[node name="car9" parent="car holder" unique_id=401230583 instance=ExtResource("6_m31cs")]
-position = Vector2(481, 91)
-rotation = 0.049625397
-car_number = 8
-
-[node name="car10" parent="car holder" unique_id=1601961736 instance=ExtResource("6_m31cs")]
-position = Vector2(481, 91)
-rotation = 0.049625397
-car_number = 9
-
-[node name="car11" parent="car holder" unique_id=937319900 instance=ExtResource("6_m31cs")]
-position = Vector2(481, 91)
-rotation = 0.049625397
-car_number = 10
-
-[node name="car12" parent="car holder" unique_id=1298909724 instance=ExtResource("6_m31cs")]
-position = Vector2(481, 91)
-rotation = 0.049625397
-car_number = 11
-
-[node name="car13" parent="car holder" unique_id=469385298 instance=ExtResource("6_m31cs")]
-position = Vector2(481, 91)
-rotation = 0.049625397
-car_number = 12
-
-[node name="car14" parent="car holder" unique_id=846102206 instance=ExtResource("6_m31cs")]
-position = Vector2(481, 91)
-rotation = 0.049625397
-car_number = 13
-
-[node name="car15" parent="car holder" unique_id=741982298 instance=ExtResource("6_m31cs")]
-position = Vector2(481, 91)
-rotation = 0.049625397
-car_number = 14
-
-[node name="car16" parent="car holder" unique_id=1059966200 instance=ExtResource("6_m31cs")]
-position = Vector2(481, 91)
-rotation = 0.049625397
-car_number = 15
-
-[node name="car17" parent="car holder" unique_id=1328593366 instance=ExtResource("6_m31cs")]
-position = Vector2(481, 91)
-rotation = 0.049625397
-car_number = 16
-
-[node name="car18" parent="car holder" unique_id=869104560 instance=ExtResource("6_m31cs")]
-position = Vector2(481, 91)
-rotation = 0.049625397
-car_number = 17
-
-[node name="car19" parent="car holder" unique_id=1577621899 instance=ExtResource("6_m31cs")]
-position = Vector2(481, 91)
-rotation = 0.049625397
-car_number = 18
-
-[node name="car20" parent="car holder" unique_id=756533229 instance=ExtResource("6_m31cs")]
-position = Vector2(481, 91)
-rotation = 0.049625397
-car_number = 19
-
-[node name="car21" parent="car holder" unique_id=958311395 instance=ExtResource("7_m31cs")]
-position = Vector2(481, 91)
-rotation = 0.049625397
-
-[node name="car22" parent="car holder" unique_id=1893297103 instance=ExtResource("7_m31cs")]
+[node name="car2" parent="car holder" unique_id=1008403370 instance=ExtResource("6_2dbo1")]
 position = Vector2(481, 91)
 rotation = 0.049625397
 car_number = 1
 
-[node name="car23" parent="car holder" unique_id=815149479 instance=ExtResource("7_m31cs")]
+[node name="car3" parent="car holder" unique_id=811146338 instance=ExtResource("6_2dbo1")]
 position = Vector2(481, 91)
 rotation = 0.049625397
 car_number = 2
 
-[node name="car24" parent="car holder" unique_id=1615365138 instance=ExtResource("7_m31cs")]
+[node name="car4" parent="car holder" unique_id=1704781291 instance=ExtResource("6_2dbo1")]
 position = Vector2(481, 91)
 rotation = 0.049625397
 car_number = 3
 
-[node name="car25" parent="car holder" unique_id=2017931568 instance=ExtResource("7_m31cs")]
+[node name="car5" parent="car holder" unique_id=573817184 instance=ExtResource("6_2dbo1")]
 position = Vector2(481, 91)
 rotation = 0.049625397
 car_number = 4
 
-[node name="car26" parent="car holder" unique_id=901632132 instance=ExtResource("7_m31cs")]
+[node name="car6" parent="car holder" unique_id=1322338731 instance=ExtResource("6_2dbo1")]
 position = Vector2(481, 91)
 rotation = 0.049625397
 car_number = 5
 
-[node name="car27" parent="car holder" unique_id=432065753 instance=ExtResource("7_m31cs")]
+[node name="car7" parent="car holder" unique_id=1577951436 instance=ExtResource("6_2dbo1")]
 position = Vector2(481, 91)
 rotation = 0.049625397
 car_number = 6
 
-[node name="car28" parent="car holder" unique_id=1099016097 instance=ExtResource("7_m31cs")]
+[node name="car8" parent="car holder" unique_id=120569083 instance=ExtResource("6_2dbo1")]
 position = Vector2(481, 91)
 rotation = 0.049625397
 car_number = 7
 
-[node name="car29" parent="car holder" unique_id=634012467 instance=ExtResource("7_m31cs")]
+[node name="car9" parent="car holder" unique_id=401230583 instance=ExtResource("6_2dbo1")]
 position = Vector2(481, 91)
 rotation = 0.049625397
 car_number = 8
 
-[node name="car30" parent="car holder" unique_id=1940061672 instance=ExtResource("7_m31cs")]
+[node name="car10" parent="car holder" unique_id=1601961736 instance=ExtResource("6_2dbo1")]
 position = Vector2(481, 91)
 rotation = 0.049625397
 car_number = 9
 
-[node name="car31" parent="car holder" unique_id=1727253030 instance=ExtResource("7_m31cs")]
+[node name="car11" parent="car holder" unique_id=937319900 instance=ExtResource("6_2dbo1")]
 position = Vector2(481, 91)
 rotation = 0.049625397
 car_number = 10
 
-[node name="car32" parent="car holder" unique_id=1504508426 instance=ExtResource("7_m31cs")]
+[node name="car12" parent="car holder" unique_id=1298909724 instance=ExtResource("6_2dbo1")]
 position = Vector2(481, 91)
 rotation = 0.049625397
 car_number = 11
 
-[node name="car33" parent="car holder" unique_id=507575453 instance=ExtResource("7_m31cs")]
+[node name="car13" parent="car holder" unique_id=469385298 instance=ExtResource("6_2dbo1")]
 position = Vector2(481, 91)
 rotation = 0.049625397
 car_number = 12
 
-[node name="car34" parent="car holder" unique_id=692574666 instance=ExtResource("7_m31cs")]
+[node name="car14" parent="car holder" unique_id=846102206 instance=ExtResource("6_2dbo1")]
 position = Vector2(481, 91)
 rotation = 0.049625397
 car_number = 13
 
-[node name="car35" parent="car holder" unique_id=1261734639 instance=ExtResource("7_m31cs")]
+[node name="car15" parent="car holder" unique_id=741982298 instance=ExtResource("6_2dbo1")]
 position = Vector2(481, 91)
 rotation = 0.049625397
 car_number = 14
 
-[node name="car36" parent="car holder" unique_id=2136258312 instance=ExtResource("7_m31cs")]
+[node name="car16" parent="car holder" unique_id=1059966200 instance=ExtResource("6_2dbo1")]
 position = Vector2(481, 91)
 rotation = 0.049625397
 car_number = 15
 
-[node name="car37" parent="car holder" unique_id=1897293739 instance=ExtResource("7_m31cs")]
+[node name="car17" parent="car holder" unique_id=1328593366 instance=ExtResource("6_2dbo1")]
 position = Vector2(481, 91)
 rotation = 0.049625397
 car_number = 16
 
-[node name="car38" parent="car holder" unique_id=69187250 instance=ExtResource("7_m31cs")]
+[node name="car18" parent="car holder" unique_id=869104560 instance=ExtResource("6_2dbo1")]
 position = Vector2(481, 91)
 rotation = 0.049625397
 car_number = 17
 
-[node name="car39" parent="car holder" unique_id=427943115 instance=ExtResource("7_m31cs")]
+[node name="car19" parent="car holder" unique_id=1577621899 instance=ExtResource("6_2dbo1")]
 position = Vector2(481, 91)
 rotation = 0.049625397
 car_number = 18
 
-[node name="car40" parent="car holder" unique_id=391409172 instance=ExtResource("7_m31cs")]
+[node name="car20" parent="car holder" unique_id=756533229 instance=ExtResource("6_2dbo1")]
 position = Vector2(481, 91)
 rotation = 0.049625397
 car_number = 19
 
-[node name="RaceController" parent="." unique_id=1507345539 instance=ExtResource("7_mslun")]
+[node name="car21" parent="car holder" unique_id=958311395 instance=ExtResource("7_0de1r")]
+position = Vector2(481, 91)
+rotation = 0.049625397
+
+[node name="car22" parent="car holder" unique_id=1893297103 instance=ExtResource("7_0de1r")]
+position = Vector2(481, 91)
+rotation = 0.049625397
+car_number = 1
+
+[node name="car23" parent="car holder" unique_id=815149479 instance=ExtResource("7_0de1r")]
+position = Vector2(481, 91)
+rotation = 0.049625397
+car_number = 2
+
+[node name="car24" parent="car holder" unique_id=1615365138 instance=ExtResource("7_0de1r")]
+position = Vector2(481, 91)
+rotation = 0.049625397
+car_number = 3
+
+[node name="car25" parent="car holder" unique_id=2017931568 instance=ExtResource("7_0de1r")]
+position = Vector2(481, 91)
+rotation = 0.049625397
+car_number = 4
+
+[node name="car26" parent="car holder" unique_id=901632132 instance=ExtResource("7_0de1r")]
+position = Vector2(481, 91)
+rotation = 0.049625397
+car_number = 5
+
+[node name="car27" parent="car holder" unique_id=432065753 instance=ExtResource("7_0de1r")]
+position = Vector2(481, 91)
+rotation = 0.049625397
+car_number = 6
+
+[node name="car28" parent="car holder" unique_id=1099016097 instance=ExtResource("7_0de1r")]
+position = Vector2(481, 91)
+rotation = 0.049625397
+car_number = 7
+
+[node name="car29" parent="car holder" unique_id=634012467 instance=ExtResource("7_0de1r")]
+position = Vector2(481, 91)
+rotation = 0.049625397
+car_number = 8
+
+[node name="car30" parent="car holder" unique_id=1940061672 instance=ExtResource("7_0de1r")]
+position = Vector2(481, 91)
+rotation = 0.049625397
+car_number = 9
+
+[node name="car31" parent="car holder" unique_id=1727253030 instance=ExtResource("7_0de1r")]
+position = Vector2(481, 91)
+rotation = 0.049625397
+car_number = 10
+
+[node name="car32" parent="car holder" unique_id=1504508426 instance=ExtResource("7_0de1r")]
+position = Vector2(481, 91)
+rotation = 0.049625397
+car_number = 11
+
+[node name="car33" parent="car holder" unique_id=507575453 instance=ExtResource("7_0de1r")]
+position = Vector2(481, 91)
+rotation = 0.049625397
+car_number = 12
+
+[node name="car34" parent="car holder" unique_id=692574666 instance=ExtResource("7_0de1r")]
+position = Vector2(481, 91)
+rotation = 0.049625397
+car_number = 13
+
+[node name="car35" parent="car holder" unique_id=1261734639 instance=ExtResource("7_0de1r")]
+position = Vector2(481, 91)
+rotation = 0.049625397
+car_number = 14
+
+[node name="car36" parent="car holder" unique_id=2136258312 instance=ExtResource("7_0de1r")]
+position = Vector2(481, 91)
+rotation = 0.049625397
+car_number = 15
+
+[node name="car37" parent="car holder" unique_id=1897293739 instance=ExtResource("7_0de1r")]
+position = Vector2(481, 91)
+rotation = 0.049625397
+car_number = 16
+
+[node name="car38" parent="car holder" unique_id=69187250 instance=ExtResource("7_0de1r")]
+position = Vector2(481, 91)
+rotation = 0.049625397
+car_number = 17
+
+[node name="car39" parent="car holder" unique_id=427943115 instance=ExtResource("7_0de1r")]
+position = Vector2(481, 91)
+rotation = 0.049625397
+car_number = 18
+
+[node name="car40" parent="car holder" unique_id=391409172 instance=ExtResource("7_0de1r")]
+position = Vector2(481, 91)
+car_number = 19
+
+[node name="RaceController" parent="." unique_id=1507345539 instance=ExtResource("8_kegpk")]
 
 [connection signal="area_entered" from="track_collision" to="." method="_on_track_collision_area_entered"]
 [connection signal="area_entered" from="Startline" to="." method="_on_startline_area_entered"]

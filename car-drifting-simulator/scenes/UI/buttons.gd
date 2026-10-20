@@ -1,6 +1,5 @@
 extends ColorRect
 
-@onready var track_select: OptionButton = $HBoxContainer/track_select
 @onready var options: MenuButton = $HBoxContainer/options
 @onready var track: Track = $"../../../content/visuals/track/Panel/SubViewportContainer/SubViewport/Track"
 @onready var socket: Node = $"../../../content/visuals/track/Panel/SubViewportContainer/SubViewport/socket"
@@ -18,6 +17,10 @@ func _on_menu_option_selected(id: int) -> void:
 			open_load_car_dialog()
 		2:
 			reset_cars()
+		3:
+			#WebSocketPeer.new().close(0)
+			socket.connect_to_python()
+			socket._process(0)
 
 
 func save_car():
@@ -32,3 +35,16 @@ func open_load_car_dialog():
 
 func reset_cars():
 	track.restart_race()
+
+func refresh_track_references() -> void:
+	var sub_viewport: SubViewport = $"../../../content/visuals/track/Panel/SubViewportContainer/SubViewport"
+	var track_node := sub_viewport.get_node_or_null("Track")
+	
+	if track_node == null:
+		push_error("Socket could not find the Track node.")
+		return
+
+	track = track_node as Track
+
+func disconnect_old_track() -> void:
+	track = null

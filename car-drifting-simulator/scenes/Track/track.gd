@@ -1,4 +1,4 @@
-extends Node
+extends Node2D
 
 class_name Track
 
@@ -7,7 +7,13 @@ class_name Track
 @onready var car_holder: Node = $"car holder"
 @onready var race_controller: RaceController = $RaceController
 
-var curve : Curve2D
+@export var car_start_position: Vector2
+@export var car_start_rotation: float
+
+var curve: Curve2D
+@export var number_of_car_on_track: int = 40
+@export var training_track: bool = true
+
 
 func _ready() -> void:
 	curve = curve_path.curve
@@ -36,5 +42,5 @@ func restart_race() -> void:
 	for car in car_holder.get_children():
 		if car is Car:
 			car.reset()
-			car.position = Vector2(481,91)
-			car.rotation = 0
+			car.position = car_start_position
+			car.rotation = car_start_rotation

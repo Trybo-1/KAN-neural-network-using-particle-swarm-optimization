@@ -69,10 +69,10 @@ def handle_evaluation(swarm1, swarm2, car_data):
         #print(f"Swarm2 Particle {particle_index} | reward: {reward} | best reward: {-swarm2.particles[particle_index].best_fitness}")
         counter += 1
 
-def sample_bspline_curves():
-    network_bspline.set_parameters(swarm_bspline.global_best_position)
+def sample_bspline_curves(network, parameters):
+    network.set_parameters(parameters)
     message = []
-    for layer_index, layer in enumerate(network_bspline.layers):
+    for layer_index, layer in enumerate(network.layers):
         for destination_index, neuron in enumerate(layer):
             for source_index, edge_function in enumerate(neuron.edge_functions):
                 message.append(
@@ -86,10 +86,10 @@ def sample_bspline_curves():
                 )
     return message
 
-def sample_polynomial_curves():
-    network_polynomial.set_parameters(swarm_polynomial.global_best_position)
+def sample_polynomial_curves(network, parameters):
+    network.set_parameters(parameters)
     message = []
-    for layer_index, layer in enumerate(network_polynomial.layers):
+    for layer_index, layer in enumerate(network.layers):
         for destination_index, neuron in enumerate(layer):
             for source_index, edge_function in enumerate(neuron.edge_functions):
                 message.append(
@@ -103,14 +103,51 @@ def sample_polynomial_curves():
                 )
     return message
 
+def load_inference_network(data):
+    global inference_network_bspline, inference_network_polynomial
+
+    architecture = [int(value) for value in data["architecture"]]
+    if data["edge_function_type"] == "bspline":
+        new_network = network.KANNetwork(
+            layer_sizes=architecture,
+            degree=int(data["degree"]),
+            number_of_control_points=int(data["number_of_control_points"]),
+            type=data["edge_function_type"])
+        new_network.set_parameters(data["parameters"])
+        inference_network_bspline = new_network
+        print("Inference network bspline loaded successfully.")
+        message = {
+                    "type": "inference_network_loaded",
+                    "edge_function_type": "bspline"
+                 }
+
+
+    elif data["edge_function_type"] == "polynomial":
+        new_network = network.KANNetwork(
+            layer_sizes=architecture,
+            degree=int(data["degree"]),
+            number_of_control_points=int(data["number_of_control_points"]),
+            type=data["edge_function_type"])
+        new_network.set_parameters(data["parameters"])
+        inference_network_polynomial = new_network
+        print("Inference network polynomial loaded successfully.")
+        message = {
+                    "type": "inference_network_loaded",
+                    "edge_function_type": "polynomial"
+                }
+    return message
+
+def inference_network_forward(network, inputs):
+    return network.forward(inputs)
+
 network_bspline = network.KANNetwork(
-    layer_sizes=[6, 4, 2],
+    layer_sizes=[6, 8, 2],
     degree=2,
     number_of_control_points=5,
 )
 
 network_polynomial = network.KANNetwork(
-    layer_sizes=[6, 4, 2],
+    layer_sizes=[6, 8, 2],
     degree=2,
     number_of_control_points=5,
     type="polynomial"
@@ -134,6 +171,23 @@ swarm_bspline.global_best_position = network_bspline.get_parameters()
 swarm_polynomial.particles[0].position = network_polynomial.get_parameters()
 swarm_polynomial.global_best_position = network_polynomial.get_parameters()
 
+
+inference_network_bspline = network.KANNetwork(
+    layer_sizes=[6, 2],
+    degree=2,
+    number_of_control_points=5,
+)
+
+inference_network_polynomial = network.KANNetwork(
+    layer_sizes=[6, 2],
+    degree=2,
+    number_of_control_points=5,
+    type="polynomial"
+)
+
+
+
+
 async def handle_client(websocket):
     print("Godot connected")
     particle_index = 0
@@ -152,7 +206,10 @@ async def handle_client(websocket):
             }
 
         if data["type"] == "state":
-            outputs = respond_to_states(network_bspline, network_polynomial, swarm_bspline.particles, swarm_polynomial.particles, data["states"])
+            if data["training"]:
+                outputs = respond_to_states(network_bspline, network_polynomial, swarm_bspline.particles, swarm_polynomial.particles, data["states"])
+            else:
+                outputs = [inference_network_forward(inference_network_bspline, data["states"][0]), inference_network_forward(inference_network_polynomial, data["states"][1])]
             response = {
                 "type": "action",
                 "step": data["step"],
@@ -173,7 +230,7 @@ async def handle_client(websocket):
             print(f"Epoch {epoch} | Global best reward polynomial: {-swarm_polynomial.global_best_fitness}")
             epoch += 1
 
-            curve_data = sample_bspline_curves()
+            curve_data = sample_bspline_curves(network_bspline, swarm_bspline.global_best_position)
             for curve in curve_data:
                 message = {
                     "type": "curve_bspline",
@@ -185,7 +242,7 @@ async def handle_client(websocket):
                 }
                 await websocket.send(json.dumps(message))
             
-            curve_data = sample_polynomial_curves()
+            curve_data = sample_polynomial_curves(network_polynomial, swarm_polynomial.global_best_position)
             for curve in curve_data:
                 message = {
                     "type": "curve_polynomial",
@@ -240,6 +297,37 @@ async def handle_client(websocket):
                 "parameters": best_position_polynomial,
             }
             await websocket.send(json.dumps(message2))
+
+        if data["type"] == "load_inference_network":
+
+            response = load_inference_network(data)
+
+            curve_data = []
+            if data["edge_function_type"] == "bspline":
+                curve_data = sample_bspline_curves(inference_network_bspline, inference_network_bspline.get_parameters())
+                for curve in curve_data:
+                                message = {
+                                    "type": "curve_bspline",
+                                    "from_layer": curve["from_layer"],
+                                    "from_neuron": curve["from_neuron"],
+                                    "to_layer": curve["to_layer"],
+                                    "to_neuron": curve["to_neuron"],
+                                    "points": curve["points"]
+                                }
+                                await websocket.send(json.dumps(message))
+            elif data["edge_function_type"] == "polynomial":
+                curve_data = sample_polynomial_curves(inference_network_polynomial, inference_network_polynomial.get_parameters())
+                for curve in curve_data:
+                                message = {
+                                    "type": "curve_polynomial",
+                                    "from_layer": curve["from_layer"],
+                                    "from_neuron": curve["from_neuron"],
+                                    "to_layer": curve["to_layer"],
+                                    "to_neuron": curve["to_neuron"],
+                                    "points": curve["points"]
+                                }
+                                await websocket.send(json.dumps(message))
+   
 
         await websocket.send(json.dumps(response))
 
