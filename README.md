@@ -15,15 +15,15 @@ The project makes these learned functions visible, so the comparison is not limi
 
 ### Main game, track, and training graphs
 
-![Retro Racer main game showing the track and training graphs](images/game.png)
+![Retro Racer main game showing the track and training graphs](images/UI.png)
 
 ### Car loader
 
-![Car loader interface](images/car_loader.png)
+![Car loader interface](images/load%20car%20menu.png)
 
 ### Track selector
 
-![Track selector interface](images/track_selector.png)
+![Track selector interface](images/track%20selector.png)
 
 > If your image files use different names or capitalization, update the paths above to match the exact filenames in `images/`. GitHub paths are case-sensitive.
 
