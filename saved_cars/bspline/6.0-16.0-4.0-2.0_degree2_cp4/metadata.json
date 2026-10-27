@@ -1,0 +1,13 @@
+{
+	"architecture": [
+		6.0,
+		16.0,
+		4.0,
+		2.0
+	],
+	"configuration_key": "6.0-16.0-4.0-2.0_degree2_cp4",
+	"degree": 2,
+	"edge_function_type": "bspline",
+	"fitness": 69891.3018518505,
+	"number_of_control_points": 4
+}

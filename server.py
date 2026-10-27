@@ -173,13 +173,13 @@ swarm_polynomial.global_best_position = network_polynomial.get_parameters()
 
 
 inference_network_bspline = network.KANNetwork(
-    layer_sizes=[6, 2],
+    layer_sizes=[6, 8, 8, 2],
     degree=2,
     number_of_control_points=5,
 )
 
 inference_network_polynomial = network.KANNetwork(
-    layer_sizes=[6, 2],
+    layer_sizes=[6, 8, 8, 2],
     degree=2,
     number_of_control_points=5,
     type="polynomial"

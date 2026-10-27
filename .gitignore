@@ -225,7 +225,7 @@ __marimo__/
 
 # Exported builds
 *.pck
-*.zip
+
 
 # Godot logs
 logs/

@@ -19,7 +19,7 @@ class EdgeFunction:
         # Calculate the function
         normalized_input = self.normalize_input(input_value)
         if self.type == "bspline":
-            return self.spline.evaluate(normalized_input)/0.5  # Normalize the output to the range [-1, 1]
+            return self.spline.evaluate(input_value)/0.5  # Normalize the output to the range [-1, 1]
         else:
             if self.type == "polynomial":
                 result = 0

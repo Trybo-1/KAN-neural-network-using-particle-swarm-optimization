@@ -1,0 +1,12 @@
+{
+	"architecture": [
+		6.0,
+		4.0,
+		2.0
+	],
+	"configuration_key": "6.0-4.0-2.0_degree2_cp5",
+	"degree": 2,
+	"edge_function_type": "polynomial",
+	"fitness": 96401.8611111108,
+	"number_of_control_points": 5
+}
